@@ -10,10 +10,9 @@ app.use(express.json());
 
 app.use('/auth',authRoutes);
 app.use('/',(req,res)=>{
-    res.send(' hello worasdasdassdsdfsld');
+    res.send(' hela sadasdasdld');
 });
-console.log(['helldo']);
-
+console.log('sfsdasdasdd');
 connectDB();
 app.listen(process.env.PORT || 5001, () => {
     console.log(`Auth service running on port ${process.env.PORT || 5001}`);

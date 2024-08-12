@@ -1,7 +1,7 @@
 import User from '../models/user.model.js';
-import bcrypt from 'bcrypt';
+import argon2 from 'argon2';
 import { client, verifyServiceSid } from '../config/twilio.js';
-import sendOtp from '../utils/sendOtp.js';
+import sendOtp from  '../utils/sendOtp.js';
 
 export const sendOtpToUser = async (req, res) => {
     const { mobile } = req.body;
@@ -58,7 +58,7 @@ export const register = async (req, res) => {
         }
 
         // Proceed to save the user after OTP verification
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await argon2.hash(password);
         const newUser = new User({ name, email, password: hashedPassword, mobile });
         await newUser.save();
 

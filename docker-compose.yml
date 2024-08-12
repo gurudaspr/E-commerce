@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build:
+      context: ./auth-service
+    ports:
+      - "5001:5001"
+    env_file:
+      - ./auth-service/.env  
+    develop:
+      watch:
+        - path: ./auth-service/package.json
+          action: rebuild
+        - path: ./auth-service
+          target: /usr/src/app
+          action: sync
+    volumes:
+      - ./auth-service:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm start
+
+
+networks:
+  mynetwork:
+    driver: bridge

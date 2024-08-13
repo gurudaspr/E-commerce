@@ -1,5 +1,6 @@
 import express from 'express';
-import { login, register, verifyEmail } from  '../controllers/auth.controller.js';
+import { changePassword, forgotPassword, login, register, resetPassword, verifyEmail } from  '../controllers/auth.controller.js';
+import {verifyJwtToken} from '../middlewares/verifyJwtToken.js';
 
 
 const router = express.Router();
@@ -7,5 +8,8 @@ const router = express.Router();
 router.post('/register', register);
 router.get('/verify-email', verifyEmail);
 router.post('/login',login );
+router.post('/change-password',verifyJwtToken, changePassword);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 
 export default router;

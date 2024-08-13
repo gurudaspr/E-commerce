@@ -1,71 +1,84 @@
+import { generateEmailToken } from '../utils/generateEmailToken.js';
 import User from '../models/user.model.js';
+import sendVerificationEmail from '../utils/sendEmail.js';
 import argon2 from 'argon2';
-import { client, verifyServiceSid } from '../config/twilio.js';
-import sendOtp from  '../utils/sendOtp.js';
 
-export const sendOtpToUser = async (req, res) => {
-    const { mobile } = req.body;
 
-    try {
-        if (!mobile) {
-            return res.status(400).json({ message: 'Mobile number is required' });
-        }
-
-        const otpStatus = await sendOtp(mobile);
-        return res.status(200).json({ message: 'OTP sent successfully', otpStatus });
-
-    } catch (err) {
-        console.error('Error sending OTP', err);
-        res.status(500).json({ message: 'Error sending OTP', error: err.message });
-    }
-};
-
-export const verifyOtp = async (req, res) => {
-    const { mobile, otp } = req.body;
-
-    try {
-        const verificationCheck = await client.verify.v2.services(verifyServiceSid)
-            .verificationChecks
-            .create({ to: mobile, code: otp });
-
-        if (verificationCheck.status !== 'approved') {
-            return res.status(400).json({ message: 'Invalid OTP or verification failed.' });
-        }
-
-        res.status(200).json({ message: 'OTP verified successfully' });
-
-    } catch (err) {
-        console.error('Error verifying OTP', err);
-        res.status(500).json({ message: 'Error verifying OTP', error: err.message });
-    }
-};
 
 export const register = async (req, res) => {
-    const { name, email, password, confirmPassword, mobile } = req.body;
-
+    const { name, email, password, confirmPassword } = req.body;
     try {
-        if (!name || !email || !password || !confirmPassword || !mobile) {
+        if (!name || !email || !password || !confirmPassword) {
             return res.status(400).json({ message: 'Please provide all required fields' });
         }
-
         const emailExist = await User.findOne({ email });
         if (emailExist) {
             return res.status(400).json({ message: 'User with this email already exists' });
         }
-
         if (password !== confirmPassword) {
             return res.status(400).json({ message: 'Passwords do not match' });
         }
-
-        // Proceed to save the user after OTP verification
         const hashedPassword = await argon2.hash(password);
-        const newUser = new User({ name, email, password: hashedPassword, mobile });
+        const verificationToken = generateEmailToken();
+        const newUser = new User({ name, email, password: hashedPassword, verificationToken });
         await newUser.save();
 
-        res.status(201).json({ message: 'User registered successfully' });
+        const verificationUrl = `http://localhost:5001/auth/verify-email?token=${verificationToken}`;
+        const subject = 'Verify your email';
+        const text = `Please click the link below to verify your email address.`;
+        await sendVerificationEmail(email, verificationUrl, subject, text);
 
-    } catch (err) {
-        console.error('Error in registering user', err);
-        res.status(500).json({ message: 'Error in registering user', error: err.message });
+        res.status(200).send('Registration successful, please check your email to verify your account');
+
+    } catch (error) {
+        console.error('Error in registering user', error);
+        res.status(500).json({ message: 'Error in registering user', error: error.message });
+
     }
-};
+}
+export const verifyEmail = async (req, res) => {
+    const { token } = req.query;
+    try {
+        const user = await User.findOne({ verificationToken: token });
+        if (!user) {
+            return res.status(400).send('Invalid or expired token');
+        }
+
+        user.isVerified = true;
+        user.verificationToken = null; // Remove the token once verified
+        await user.save();
+
+        res.status(200).send('Email verified successfully');
+    }
+    catch (error) {
+        console.error('Error verifying email', error);
+        res.status(500).json({ message: 'Error verifying email', error: error.message });
+    }
+}
+
+export const login = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+        if (!user.isVerified) {
+            return res.status(400).json({ message: 'Please verify your email first' });
+        }
+        if (!user.password) {
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+
+        const isPasswordCorrect = await argon2.verify(user.password, password);
+        if (!isPasswordCorrect) {
+            return res.status(400).json({ message: 'Invalid email or password' });
+        }
+        res.status(200).json({ message: 'Login successful', user });
+    }
+
+    catch (error) {
+        console.error('Error while logging in user', error);
+        res.status(500).json({ message: 'Error while logging in user', error: error.message });
+    }
+}

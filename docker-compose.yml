@@ -18,5 +18,31 @@ services:
         - action: sync
           path: ./auth-service
           target: /usr/src/app
+    networks:
+      - microservices-network
+           
+  product-service:
+    build:
+      context: ./product-service
+    command: npm run watch
+    ports:
+      - "5002:5002"
+    env_file:
+      - ./product-service/.env
+    # volumes:
+    #   - ./product-service:/usr/src/app
+     
+    develop:
+      watch:
+        - action: rebuild
+          path: ./product-service/package.json
+        - action: sync
+          path: ./product-service
+          target: /usr/src/app
+    networks:
+      - microservices-network
 
-        
+
+networks:
+  microservices-network:
+    driver: bridge

@@ -3,6 +3,7 @@ services:
   auth-service:
     build:
       context: ./auth-service
+      dockerfile: Dockerfile
     command: npm run watch
     ports:
       - "5001:5001"
@@ -24,6 +25,7 @@ services:
   product-service:
     build:
       context: ./product-service
+      dockerfile: Dockerfile
     command: npm run watch
     ports:
       - "5002:5002"
@@ -41,6 +43,8 @@ services:
           target: /usr/src/app
     networks:
       - microservices-network
+    depends_on:
+      - auth-service
 
 
 networks:

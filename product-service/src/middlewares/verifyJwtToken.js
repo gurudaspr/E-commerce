@@ -33,7 +33,7 @@ export const verifyJwtToken = async (req, res, next) => {
 
 export const verifyRole = (requiredRole) => (req, res, next) => {
   if (req.user.role !== requiredRole) {
-    return res.status(403).json({ message: 'Forbidden: You are not authorized' });
+    return res.status(403).json({ message: 'Forbidden: You are not authorized to access this route' });
   }
   next();
 };

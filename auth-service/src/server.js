@@ -9,8 +9,8 @@ const app = express();
 app.use(express.json());
 
 
-app.use('/auth',authRoutes);
-app.use('/user',userRoutes);
+app.use('/api/v1/auth',authRoutes);
+app.use('/api/v1/user',userRoutes);
 app.use('/',(req,res)=>{
     res.send(' auth service');
 });

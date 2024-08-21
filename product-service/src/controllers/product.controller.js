@@ -114,23 +114,41 @@ export const updateProduct = async (req, res) => {
 
 
 export const deleteProduct = async (req, res) => {
-   try{
-      const { id } = req.params;
-      const existingProduct = await Product.findById(id);
-      if (!existingProduct) {
-         return res.status(404).json({ message: 'Product not found' });
-      }
-      //delete from cloudinary
-      const publicId = existingProduct.image.split('/').slice(7, -1).join('/') + '/' + existingProduct.image.split('/').pop().split('.')[0];
-      await cloudinary.uploader.destroy(publicId);
-      const product = await Product.findByIdAndDelete(id);
-      if (!product) {
-         return res.status(404).json({ message: 'Product not found' });
-      }
-      res.status(200).json({ message: 'Product deleted successfully' });
-   }
-   catch (error) {
-      console.error('Error deleting product', error);
-      res.status(500).json({ message: 'Error deleting product', error: error.message });
-   }
+    try {
+        const { id } = req.params;
+        const existingProduct = await Product.findById(id);
+        if (!existingProduct) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        //delete from cloudinary
+        const publicId = existingProduct.image.split('/').slice(7, -1).join('/') + '/' + existingProduct.image.split('/').pop().split('.')[0];
+        await cloudinary.uploader.destroy(publicId);
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        product.deletedAt = new Date();
+        await product.save();
+        res.status(200).json({ message: 'Product deleted successfully' });
+    }
+    catch (error) {
+        console.error('Error deleting product', error);
+        res.status(500).json({ message: 'Error deleting product', error: error.message });
+    }
+};
+
+export const restoreProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    product.deletedAt = null;
+    await product.save();
+    res.status(200).json({ message: 'Product restored successfully' });
+  } catch (error) {
+    console.error('Error restoring product', error);
+    res.status(500).json({ message: 'Error restoring product', error: error.message });
+  }
 };

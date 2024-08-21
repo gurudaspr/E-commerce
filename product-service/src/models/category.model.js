@@ -9,6 +9,10 @@ const categorySchema = new mongoose.Schema({
     },
     description: {
         type: String,
+    },
+    deletedAt:{
+        type: Date,
+        default: null
     }
 },{ timestamps: true });
 

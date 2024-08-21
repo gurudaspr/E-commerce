@@ -25,7 +25,8 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     stock: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Inventory',
         required: true
     },
     reviews: [

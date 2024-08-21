@@ -7,10 +7,11 @@ import  upload  from '../middlewares/upload.middleware.js';
 
 const router = express.Router();
 
+// Product routes
 router.get('/', verifyJwtToken, getProducts);
 router.get('/:id', verifyJwtToken, getProductById);
 router.post('/', verifyJwtToken, verifyRole('admin'), upload.single('image') , addProduct);
-router.patch('/:id', verifyJwtToken, verifyRole('admin'), updateProduct);
+router.patch('/:id', verifyJwtToken, verifyRole('admin'),upload.single('image') , updateProduct);
 router.delete('/:id', verifyJwtToken, verifyRole('admin'), deleteProduct);
 
 

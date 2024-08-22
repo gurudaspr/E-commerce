@@ -45,7 +45,30 @@ services:
       - microservices-network
     depends_on:
       - auth-service
-
+  inventory-service:
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile
+    command: npm run watch
+    ports:
+      - "5003:5003"
+    env_file:
+      - ./inventory-service/.env
+    # volumes:
+    #   - ./inventory-service:/usr/src/app
+     
+    develop:
+      watch:
+        - action: rebuild
+          path: ./inventory-service/package.json
+        - action: sync
+          path: ./inventory-service
+          target: /usr/src/app
+    networks:
+      - microservices-network
+    depends_on:
+      - auth-service
+      - product-service
 
 networks:
   microservices-network:

@@ -17,7 +17,7 @@ app.use('/',(req,res)=>{
 });
 
 connectDB();
-app.listen(process.env.PORT || 5001, () => {
+app.listen(process.env.PORT || 5002, () => {
     console.log(`Product service running on port ${process.env.PORT || 5001}`);
 });
 

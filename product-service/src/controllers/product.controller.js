@@ -36,12 +36,11 @@ export const addProduct = async (req, res) => {
                 .json({ success: false, message: "No file uploaded" });
         }
         const { name, description, price, category, stock } = req.body;
-        if (!name || !description || !price || !category || !stock) {
+        if (!name || !description || !price || !category) {
             return res
                 .status(400)
                 .json({ success: false, message: "Please provide all the required fields" });
         }
-
         const folderPath = "e-commerce/products";
         const result = await cloudinary.uploader.upload(req.file.path, {
             folder: folderPath,
@@ -55,7 +54,7 @@ export const addProduct = async (req, res) => {
             price,
             category,
             image: result.secure_url,
-            stock,
+            // stock,
         });
         await newProduct.save();
         res.status(201).json({ message: 'Product added successfully', product: newProduct });
@@ -138,17 +137,17 @@ export const deleteProduct = async (req, res) => {
 };
 
 export const restoreProduct = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        product.deletedAt = null;
+        await product.save();
+        res.status(200).json({ message: 'Product restored successfully' });
+    } catch (error) {
+        console.error('Error restoring product', error);
+        res.status(500).json({ message: 'Error restoring product', error: error.message });
     }
-    product.deletedAt = null;
-    await product.save();
-    res.status(200).json({ message: 'Product restored successfully' });
-  } catch (error) {
-    console.error('Error restoring product', error);
-    res.status(500).json({ message: 'Error restoring product', error: error.message });
-  }
 };

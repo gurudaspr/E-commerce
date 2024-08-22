@@ -24,11 +24,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    stock: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Inventory',
-        required: true
-    },
+    // stock: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Inventory',
+    //     required: true
+    // },
     reviews: [
         {
             type: mongoose.Schema.Types.ObjectId,

@@ -1,11 +1,12 @@
+
 import Inventory from '../models/inventory.model.js';
 
 
 
 export const addInventory = async (req, res) => {
-    const { productId,quantity, reorderThreshold } = req.body;
+    const { productId, quantity, reorderThreshold } = req.body;
     try {
-        if (!productId || !quantity ) {
+        if (!productId || !quantity) {
             return res
                 .status(400)
                 .json({ success: false, message: "Please provide all the required fields" });
@@ -25,7 +26,75 @@ export const addInventory = async (req, res) => {
         res.status(201).json(inventory);
     }
     catch (err) {
-        console.log(" error in adding inventory");
-        res.status(500).json({ message: err.message });
+        console.log(" error in adding inventory", err);
+        res.status(500).json({ message: 'Error adding inventory', error: err.message });
     }
 }
+
+export const getInventoryByProduct = async (req, res) => {
+    const { productId } = req.params;
+    try {
+        const inventory = await Inventory.findOne({ product: productId });
+        if (!inventory) {
+            return res.status(404).json({ message: 'Inventory not found' });
+        }
+        res.status(200).json(inventory);
+    }
+    catch (err) {
+        console.log(" error in getting inventory",err);
+        res.status(500).json({ message: 'Error getting inventory by product', error: err.message });
+    }
+}
+
+export const getAllInventory = async (req, res) => {
+    try {
+        const inventory = await Inventory.find().populate({
+            path: 'product',
+            strictPopulate: false  // Disable strict population checks
+          });
+        if (!inventory) {
+            return res.status(404).json({ message: 'Inventory not found' });
+        }
+        res.status(200).json(inventory);
+    }
+    catch (err) {
+        console.log(" error in getting inventory", err);
+        res.status(500).json({ message: 'Error getting inventory', error: err.message });
+    }
+}
+
+export const updateInventory = async (req, res) => {
+    const { productId } = req.params;
+    const { quantity, reorderThreshold } = req.body;
+    try {
+        const existingInventory = await Inventory.findOne({ product: productId });
+        if (!existingInventory) {
+            return res.status(404).json({ message: 'Inventory not found' });
+        }
+        existingInventory.quantity = quantity;
+        existingInventory.reorderThreshold = reorderThreshold;
+        await existingInventory.save();
+        res.status(200).json(existingInventory);
+    }
+    catch (err) {
+        console.log(" error in updating inventory", err);
+        res.status(500).json({ message: 'Error updating inventory', error: err.message });
+    }
+}
+export const deleteInventory = async (req, res) => {
+    const { productId } = req.params;
+    try {
+        const existingInventory = await Inventory.findOne({ product: productId });
+        if (!existingInventory) {
+            return res.status(404).json({ message: 'Inventory not found' });
+        }
+        existingInventory.deletedAt = new Date();
+        await existingInventory.save();
+        res.status(200).json(existingInventory);
+    }
+    catch (err) {
+        console.log(" error in deleting inventory", err);
+        res.status(500).json({ message: 'Error deleting inventory', error: err.message });
+
+    }
+}       

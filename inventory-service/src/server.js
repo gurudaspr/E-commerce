@@ -9,6 +9,8 @@ app.use(express.json());
 
 
 app.use('/api/v1/inventory',inventoryRoutes);
+
+
 app.use('/',(req,res)=>{
     res.send('inventory service running'); 
 });

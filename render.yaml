@@ -20,7 +20,7 @@ services:
         value: "hjsvopggvshjmuwt"
       - key: JWT_SECRET
         value: "Mxc04sd2FUbcbNfArP9Lrha4ijhBZ8JXCnQWKEcwRMU="
-  
+
   - type: web
     name: product-service
     env: docker
@@ -42,7 +42,7 @@ services:
         value: "CSXU-RnW2p_SCpPzyZilkg1Juuc"
       - key: INVENTORY_SERVICE_URL
         value: "https://inventory-service.onrender.com"
-  
+
   - type: web
     name: inventory-service
     env: docker
@@ -56,3 +56,14 @@ services:
         value: "mongodb+srv://your-mongodb-uri"
       - key: JWT_SECRET
         value: "Mxc04sd2FUbcbNfArP9Lrha4ijhBZ8JXCnQWKEcwRMU="
+
+  - type: web
+    name: root-service
+    env: docker
+    dockerfilePath: ./Dockerfile
+    buildCommand: ""
+    startCommand: "npm start" # Update if necessary based on the root Dockerfile's content
+    envVars:
+      - key: SOME_ENV_VAR
+        value: "value"
+      # Add other environment variables as needed for the root service

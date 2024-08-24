@@ -7,16 +7,20 @@ services:
     startCommand: "npm start"
     envVars:
       - key: PORT
-        value: 5001
+        value: "5001"
       - key: MONGODB_URI
-        value: 'mongodb+srv://gurudaspranavam007:h4WW6O5NyBuHL84j@cluster0.1ov8q.mongodb.net/e-commerce?retryWrites=true&w=majority&appName=Cluster0'
+        value: "mongodb+srv://your-mongodb-uri"
+      - key: TWILIO_ACCOUNT_SID
+        value: "your-twilio-account-sid"
+      - key: TWILIO_AUTH_TOKEN
+        value: "your-twilio-auth-token"
       - key: FROM_MAIL_ID
-        value: contact.ashflix@gmail.com
+        value: "contact.ashflix@gmail.com"
       - key: FROM_MAIL_PASSWORD
-        value: hjsvopggvshjmuwt
+        value: "hjsvopggvshjmuwt"
       - key: JWT_SECRET
-        value: Mxc04sd2FUbcbNfArP9Lrha4ijhBZ8JXCnQWKEcwRMU=
-
+        value: "Mxc04sd2FUbcbNfArP9Lrha4ijhBZ8JXCnQWKEcwRMU="
+  
   - type: web
     name: product-service
     env: docker
@@ -25,20 +29,20 @@ services:
     startCommand: "npm start"
     envVars:
       - key: PORT
-        value: 5002
+        value: "5002"
       - key: MONGODB_URI
-        value: 'mongodb+srv://gurudaspranavam007:h4WW6O5NyBuHL84j@cluster0.1ov8q.mongodb.net/e-commerce?retryWrites=true&w=majority&appName=Cluster0'
+        value: "mongodb+srv://your-mongodb-uri"
       - key: JWT_SECRET
-        value: Mxc04sd2FUbcbNfArP9Lrha4ijhBZ8JXCnQWKEcwRMU=
+        value: "Mxc04sd2FUbcbNfArP9Lrha4ijhBZ8JXCnQWKEcwRMU="
       - key: CLOUD_NAME
-        value: dn4kcza7g
+        value: "dn4kcza7g"
       - key: API_KEY
-        value: 519873683241892
+        value: "519873683241892"
       - key: API_SECRET
-        value: CSXU-RnW2p_SCpPzyZilkg1Juuc
+        value: "CSXU-RnW2p_SCpPzyZilkg1Juuc"
       - key: INVENTORY_SERVICE_URL
-        value: http://inventory-service:5003
-
+        value: "https://inventory-service.onrender.com"
+  
   - type: web
     name: inventory-service
     env: docker
@@ -47,8 +51,8 @@ services:
     startCommand: "npm start"
     envVars:
       - key: PORT
-        value: 5003
+        value: "5003"
       - key: MONGODB_URI
-        value: 'mongodb+srv://gurudaspranavam007:h4WW6O5NyBuHL84j@cluster0.1ov8q.mongodb.net/e-commerce?retryWrites=true&w=majority&appName=Cluster0'
+        value: "mongodb+srv://your-mongodb-uri"
       - key: JWT_SECRET
-        value: Mxc04sd2FUbcbNfArP9Lrha4ijhBZ8JXCnQWKEcwRMU=
+        value: "Mxc04sd2FUbcbNfArP9Lrha4ijhBZ8JXCnQWKEcwRMU="

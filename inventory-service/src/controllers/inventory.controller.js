@@ -2,7 +2,7 @@
 import Inventory from '../models/inventory.model.js';
 
 
-
+// Add a new inventory  
 export const addInventory = async (req, res) => {
     const { productId, quantity, reorderThreshold } = req.body;
     try {
@@ -31,6 +31,9 @@ export const addInventory = async (req, res) => {
     }
 }
 
+
+// Get inventory details for a specific product
+
 export const getInventoryByProduct = async (req, res) => {
     const { productId } = req.params;
     try {
@@ -45,7 +48,7 @@ export const getInventoryByProduct = async (req, res) => {
         res.status(500).json({ message: 'Error getting inventory by product', error: err.message });
     }
 }
-
+// Get all inventories
 export const getAllInventory = async (req, res) => {
     try {
         const inventory = await Inventory.find().populate({
@@ -62,7 +65,7 @@ export const getAllInventory = async (req, res) => {
         res.status(500).json({ message: 'Error getting inventory', error: err.message });
     }
 }
-
+// Update an inventory
 export const updateInventory = async (req, res) => {
     const { productId } = req.params;
     const { quantity, reorderThreshold } = req.body;
@@ -81,6 +84,8 @@ export const updateInventory = async (req, res) => {
         res.status(500).json({ message: 'Error updating inventory', error: err.message });
     }
 }
+
+// Delete an inventory
 export const deleteInventory = async (req, res) => {
     const { productId } = req.params;
     try {

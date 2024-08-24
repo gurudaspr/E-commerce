@@ -1,5 +1,5 @@
 
-services:
+services: 
   auth-service:
     build:
       context: ./auth-service

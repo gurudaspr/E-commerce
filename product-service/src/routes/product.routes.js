@@ -9,7 +9,7 @@ const router = express.Router();
 
 // Product routes
 router.get('/', verifyJwtToken, getProducts);
-router.get('/:id', verifyJwtToken, getProductById);
+router.get('/:id', verifyJwtToken, getProductById); //Get product details by id with inventory details
 router.post('/', verifyJwtToken, verifyRole('admin'), upload.single('image') , addProduct);
 router.patch('/:id', verifyJwtToken, verifyRole('admin'),upload.single('image') , updateProduct);
 router.delete('/:id', verifyJwtToken, verifyRole('admin'), deleteProduct);

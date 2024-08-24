@@ -1,6 +1,7 @@
 
 import cloudinary from '../config/cloudinary.js';
 import Product from '../models/product.model.js';
+import axios from 'axios';
 
 
 
@@ -14,19 +15,37 @@ export const getProducts = async (req, res) => {
         res.status(500).json({ message: 'Error getting products', error: error.message });
     }
 };
+
+// Get product details by id with inventory details
 export const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
         const product = await Product.findById(id);
+
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
-        res.status(200).json({ message: 'Product fetched successfully', product: product });
+        let inventoryDetails;
+        try {
+            const inventoryResponse = await axios.get(`${process.env.INVENTORY_SERVICE_URL}/api/v1/inventory/${id}`);
+            inventoryDetails = inventoryResponse.data;
+        } catch (inventoryError) {
+            console.error('Error fetching inventory details', inventoryError);
+            inventoryDetails = { error: 'Unable to fetch inventory details' };
+        }
+
+        res.status(200).json({
+            message: 'Product fetched successfully',
+            product: product,
+            inventory: inventoryDetails
+        });
     } catch (error) {
         console.error('Error getting product by id', error);
         res.status(500).json({ message: 'Error getting product by id', error: error.message });
     }
 };
+
+// Add a new product
 export const addProduct = async (req, res) => {
 
     try {

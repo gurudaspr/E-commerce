@@ -94,6 +94,44 @@ services:
       - auth-service
       - product-service
       - inventory-service
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    command: npm run watch
+    ports:
+      - "5005:5005"
+    env_file:
+      - ./order-service/.env
+    develop:
+      watch:
+        - action: rebuild
+          path: ./order-service/package.json
+        - action: sync
+          path: ./order-service
+          target: /usr/src/app
+    networks:
+      - microservices-network
+
+  coupon-service:
+    build:
+      context: ./coupon-service
+      dockerfile: Dockerfile
+    command: npm run watch
+    ports:
+      - "5006:5006"
+    env_file:
+      - ./coupon-service/.env
+    develop:
+      watch:
+        - action: rebuild
+          path: ./coupon-service/package.json
+        - action: sync
+          path: ./coupon-service
+          target: /usr/src/app
+    networks:
+      - microservices-network
 networks:
   microservices-network:
     driver: bridge

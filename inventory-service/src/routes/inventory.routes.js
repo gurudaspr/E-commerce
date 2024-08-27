@@ -7,7 +7,7 @@ import  { verifyJwtToken, verifyRole } from "../middlewares/verifyJwtToken.js";
 const router = express.Router();
 
 
-router.get('/', getAllInventory); //Get all inventory records
+router.get('/', getAllInventory); //Get all inventory records 
 
 
 router.post('/', verifyJwtToken, verifyRole('admin'), addInventory); // POST /inventory - Add a new inventory record

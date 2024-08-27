@@ -69,7 +69,31 @@ services:
     depends_on:
       - auth-service
       - product-service
-
+  cart-service:
+    build:
+      context: ./cart-service
+      dockerfile: Dockerfile
+    command: npm run watch
+    ports:
+      - "5004:5004"
+    env_file:
+      - ./cart-service/.env
+    # volumes:
+    #   - ./cart-service:/usr/src/app
+     
+    develop:
+      watch:
+        - action: rebuild
+          path: ./cart-service/package.json
+        - action: sync
+          path: ./cart-service
+          target: /usr/src/app
+    networks:
+      - microservices-network
+    depends_on:
+      - auth-service
+      - product-service
+      - inventory-service
 networks:
   microservices-network:
     driver: bridge

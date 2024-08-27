@@ -170,3 +170,29 @@ export const restoreProduct = async (req, res) => {
         res.status(500).json({ message: 'Error restoring product', error: error.message });
     }
 };
+
+
+
+// get product by id in cart 
+
+
+export const getProductByIdInCart = async (req, res) => {
+    console.log("hitting product service");
+    try {
+        const productIds = req.body.productIds;
+        console.log("productIds:", productIds);
+
+
+
+        // Find products by these IDs
+        const products = await Product.find({
+            _id: { $in: productIds }
+        });
+
+        // Return the products
+        res.status(200).json({ products });
+    } catch (error) {
+        console.error('Error getting product by id in cart:');
+        res.status(500).json({ message: 'Error getting product by id in cart', error: error.message });
+    }
+};

@@ -200,7 +200,8 @@ export const getProductByIdInCart = async (req, res) => {
 //select random 3 products
 export const getRandomProducts = async (req, res) => {
     try {
-        const products = await Product.find().limit(3);
+        // Use the $sample aggregation to get 3 random products
+        const products = await Product.aggregate([{ $sample: { size: 3 } }]);
         res.status(200).json({ products });
     } catch (error) {
         console.error('Error getting random products:', error);

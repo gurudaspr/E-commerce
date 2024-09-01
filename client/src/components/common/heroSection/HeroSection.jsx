@@ -24,7 +24,7 @@ const HeroSection = () => {
         </Typography>
 
         <Typography
-          variant="body1"
+          variant="h6"
           color="white"
           className="mb-6 max-w-xl mx-auto text-gray-300"
         >

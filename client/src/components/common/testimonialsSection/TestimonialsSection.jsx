@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card, CardBody, Typography, Avatar } from '@material-tailwind/react';
+import { StarIcon } from '@heroicons/react/24/solid';
 
+// Testimonial Data
 const testimonials = [
   {
     name: 'Rijo Sebastian',
@@ -52,7 +54,7 @@ const TestimonialSection = () => {
           >
             <CardBody className="text-center p-6">
               <Avatar
-                size="xl"
+                size="xxl"
                 variant="circular"
                 alt={testimonial.name}
                 className="mx-auto border-2 border-white mb-4"
@@ -74,30 +76,12 @@ const TestimonialSection = () => {
               <Typography className="text-center mb-4 text-base font-normal leading-7 text-gray-500">
                 {testimonial.review}
               </Typography>
-              <div className="flex justify-center">
+              <div className="flex justify-center space-x-1">
                 {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <svg
-                    key={i}
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-7 w-7 text-yellow-800"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    stroke="none"
-                  >
-                    <path d="M12 2l2.09 4.26L18 8.27l-3.5 3.42 1.07 4.93L12 13.77l-3.57 2.85L9.5 11.69 6 8.27l3.91-.01L12 2z" />
-                  </svg>
+                  <StarIcon key={i} className="h-6 w-6 text-yellow-900" />
                 ))}
                 {Array.from({ length: 5 - testimonial.rating }).map((_, i) => (
-                  <svg
-                    key={i}
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-7 w-7 text-gray-300"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    stroke="none"
-                  >
-                    <path d="M12 2l2.09 4.26L18 8.27l-3.5 3.42 1.07 4.93L12 13.77l-3.57 2.85L9.5 11.69 6 8.27l3.91-.01L12 2z" />
-                  </svg>
+                  <StarIcon key={i} className="h-6 w-6 text-gray-300" />
                 ))}
               </div>
             </CardBody>

@@ -14,25 +14,22 @@ export default defineConfig({
         // Proxy for user-related requests
       '/api/v1/user': {
         target: 'http://localhost:5001',
-        rewrite: (path) => path.replace(/^\/api\/v1\/user/, '/user'),
       },
       // Proxy for products 
       '/api/v1/products': {
         target: 'http://localhost:5002',  // Replace with the appropriate service URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/products/, '/products'),
+       
       },
       '/api/v1/categories': {
         target: 'http://localhost:5002',  // Replace with the appropriate service URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/categories/, '/categories'),
       },
 
       // Proxy for inventory
       '/api/v1/inventory': {
         target: 'http://localhost:5003',  // Replace with the appropriate service URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/inventory/, '/inventory'),
       },
 
       // Proxy for cart-related requests

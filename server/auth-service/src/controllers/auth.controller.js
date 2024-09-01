@@ -26,6 +26,7 @@ export const register = async (req, res) => {
         await newUser.save();
 
         const verificationUrl = `${process.env.EMAIL_VERIFICATION_LINK}/${verificationToken}`;
+             
         const subject = 'Verify your email';
         const text = `Please click the link below to verify your email address.`;
         await sendVerificationEmail(email, verificationUrl, subject, text);

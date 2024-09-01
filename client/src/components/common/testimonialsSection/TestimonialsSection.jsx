@@ -57,7 +57,7 @@ const TestimonialSection = () => {
                 size="xxl"
                 variant="circular"
                 alt={testimonial.name}
-                className="mx-auto border-2 border-white mb-4"
+                className="mx-auto border-2 border-white mb-4 object-top"
                 src={testimonial.image}
               />
               <Typography

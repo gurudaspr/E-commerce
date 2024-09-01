@@ -8,6 +8,7 @@ import CustomerSupport from '../components/common/info-pages/CustomerSupport';
 import Faq from '../components/common/info-pages/Faq';
 import EmailSentpage from '../pages/common/EmailSentpage';
 import EmailVerification from '../components/common/auth/EmailVerification';
+import SignInPage from '../pages/common/SignInPage';
 
 export const routes = [
     {
@@ -22,10 +23,10 @@ export const routes = [
                 path: '/products',
                 element: <h1>Products</h1>
             },
-            // {
-            //     path: '/login',
-            //     element: <LoginPage />
-            // },
+            {
+                path: '/login',
+                element: <SignInPage />
+            },
             {
                 path: '/signup',
                 element: <SignUpPage />

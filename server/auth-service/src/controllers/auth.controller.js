@@ -26,12 +26,12 @@ export const register = async (req, res) => {
         await newUser.save();
 
         const verificationUrl = `${process.env.EMAIL_VERIFICATION_LINK}/${verificationToken}`;
-             
+
         const subject = 'Verify your email';
         const text = `Please click the link below to verify your email address.`;
         await sendVerificationEmail(email, verificationUrl, subject, text);
 
-        res.status(200).send({message: 'Registration successful, please check your email to verify your account'});
+        res.status(200).send({ message: 'Registration successful, please check your email to verify your account' });
 
     } catch (error) {
         console.error('Error in registering user', error);
@@ -77,7 +77,11 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: 'Invalid email or password' });
         }
         const token = generateJwt(user._id, user.role);
-        res.status(200).json({ message: 'Login successful', user, token });
+        res.status(200).json({
+            message: 'Login successful',
+            user: { name: user.name, email: user.email, role: user.role },
+            token
+        });
     }
 
     catch (error) {
@@ -89,7 +93,7 @@ export const login = async (req, res) => {
 
 export const changePassword = async (req, res) => {
     const { currentPassword, password, confirmPassword } = req.body;
-    const userId = req.user.userId 
+    const userId = req.user.userId
 
     try {
         const user = await User.findOne({ _id: userId });

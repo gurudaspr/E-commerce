@@ -42,7 +42,7 @@ const NavbarCommon = () => {
   }, []);
 
   return (
-    <Navbar color="transparent border-b border-gray-300" fullWidth>
+    <Navbar color="transparent" fullWidth className="border-b border-blue-gray-300">
       <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
         <Typography
           as={Link}
@@ -59,7 +59,7 @@ const NavbarCommon = () => {
           <Button color="gray" className="hidden lg:inline-block">
             Sign Up
           </Button>
-          </Link>
+        </Link>
         <IconButton
           size="sm"
           variant="text"

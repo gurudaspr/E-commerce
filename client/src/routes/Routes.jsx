@@ -6,6 +6,8 @@ import PrivacyPolicy from '../components/common/info-pages/PrivacyPolicy';
 import ShippingAndReturn from '../components/common/info-pages/ShippingAndReturn';
 import CustomerSupport from '../components/common/info-pages/CustomerSupport';
 import Faq from '../components/common/info-pages/Faq';
+import EmailSentpage from '../pages/common/EmailSentpage';
+import EmailVerification from '../components/common/auth/EmailVerification';
 
 export const routes = [
     {
@@ -27,6 +29,15 @@ export const routes = [
             {
                 path: '/signup',
                 element: <SignUpPage />
+            },
+            {
+                path: '/email-sent',
+                element: <EmailSentpage />
+            },
+            {
+                path : '/verify-email/:token',
+                element: <EmailVerification />
+
             },
             {
                 path: '/terms-and-conditions',

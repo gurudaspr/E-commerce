@@ -3,6 +3,7 @@ import User from '../models/user.model.js';
 import sendVerificationEmail from '../utils/sendEmail.js';
 import argon2 from 'argon2';
 import { generateJwt } from '../utils/generateJwt.js';
+import 'dotenv/config';
 
 
 
@@ -24,12 +25,12 @@ export const register = async (req, res) => {
         const newUser = new User({ name, email, password: hashedPassword, verificationToken });
         await newUser.save();
 
-        const verificationUrl = `http://localhost:5001/auth/verify-email?token=${verificationToken}`;
+        const verificationUrl = `${process.env.EMAIL_VERIFICATION_LINK}/${verificationToken}`;
         const subject = 'Verify your email';
         const text = `Please click the link below to verify your email address.`;
         await sendVerificationEmail(email, verificationUrl, subject, text);
 
-        res.status(200).send('Registration successful, please check your email to verify your account');
+        res.status(200).send({message: 'Registration successful, please check your email to verify your account'});
 
     } catch (error) {
         console.error('Error in registering user', error);
@@ -42,9 +43,8 @@ export const verifyEmail = async (req, res) => {
     try {
         const user = await User.findOne({ verificationToken: token });
         if (!user) {
-            return res.status(400).send('Invalid or expired token');
+            return res.status(400).send({ message: 'Invalid or expired token' });
         }
-
         user.isVerified = true;
         user.verificationToken = undefined; // Remove the token once verified
         await user.save();

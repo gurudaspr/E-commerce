@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Card,
     Input,
@@ -10,24 +10,34 @@ import {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useSignup from '../../../hooks/useSignup.js';
+import toast from "react-hot-toast";
 
 const SignupSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
     confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match')
-
 });
 
 function Signup() {
+    const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(SignupSchema),
     });
+    const { signup, isLoading, success } = useSignup();
+
+    useEffect(() => {
+        if (success) {
+            navigate('/email-sent');
+        }
+    }, [success, navigate]);
 
     const onSubmit = (data) => {
-        console.log(data);
+        signup(data);
     };
+
     return (
         <section className="px-8">
             <div className="container mx-auto h-screen grid place-items-center">
@@ -66,15 +76,15 @@ function Signup() {
                             </div>
                             {/* Email Input */}
                             <div className="relative">
-                            <Input
-                                variant="outlined"
-                                label="Email"
-                                type="email"
-                                placeholder="name@mail.com"
-                                className="w-full"
-                                {...register("email")}
-                            />
-                             {errors.email && (
+                                <Input
+                                    variant="outlined"
+                                    label="Email"
+                                    type="email"
+                                    placeholder="name@mail.com"
+                                    className="w-full"
+                                    {...register("email")}
+                                />
+                                {errors.email && (
                                     <span className="absolute text-red-300 text-xs  left-2">
                                         {errors.email.message}
                                     </span>
@@ -82,32 +92,31 @@ function Signup() {
                             </div>
                             {/* Password Input */}
                             <div className="relative">
-                            <Input
-                                variant="outlined"
-                                label="Password"
-                                type="password"
-                                placeholder="********"
-                                className="w-full"
-                                {...register("password")}
-                            />{errors.password && (
-                                <span className="absolute text-red-300 text-xs  left-2">
-                                    {errors.password.message}
-                                </span>
-                            )}
-                             
-
+                                <Input
+                                    variant="outlined"
+                                    label="Password"
+                                    type="password"
+                                    placeholder="********"
+                                    className="w-full"
+                                    {...register("password")}
+                                />
+                                {errors.password && (
+                                    <span className="absolute text-red-300 text-xs  left-2">
+                                        {errors.password.message}
+                                    </span>
+                                )}
                             </div>
                             {/* Confirm Password Input */}
                             <div className="relative">
-                            <Input
-                                variant="outlined"
-                                label="Confirm Password"
-                                type="password"
-                                placeholder="********"
-                                className="w-full"
-                                {...register("confirmPassword")}
-                            />
-                            {errors.confirmPassword && (
+                                <Input
+                                    variant="outlined"
+                                    label="Confirm Password"
+                                    type="password"
+                                    placeholder="********"
+                                    className="w-full"
+                                    {...register("confirmPassword")}
+                                />
+                                {errors.confirmPassword && (
                                     <span className="absolute text-red-300 text-xs  left-2">
                                         {errors.confirmPassword.message}
                                     </span>
@@ -115,7 +124,7 @@ function Signup() {
                             </div>
 
                             {/* Submit Button */}
-                            <Button type="submit" size="lg" color="gray" fullWidth>
+                            <Button type="submit" loading={isLoading} size="lg" color="gray" fullWidth>
                                 Sign Up
                             </Button>
 

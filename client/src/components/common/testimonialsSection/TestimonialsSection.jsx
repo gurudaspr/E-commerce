@@ -31,12 +31,6 @@ const TestimonialSection = () => {
       <div className="container mx-auto text-center mb-12">
         <Typography
           color="blue-gray"
-          className="mb-2 font-bold uppercase"
-        >
-          Testimonials
-        </Typography>
-        <Typography
-          color="blue-gray"
           className="mb-4 text-2xl font-bold lg:text-4xl"
         >
           What Our Customers Say
@@ -85,7 +79,7 @@ const TestimonialSection = () => {
                   <svg
                     key={i}
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-yellow-500"
+                    className="h-7 w-7 text-yellow-800"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     stroke="none"
@@ -97,7 +91,7 @@ const TestimonialSection = () => {
                   <svg
                     key={i}
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-gray-300"
+                    className="h-7 w-7 text-gray-300"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     stroke="none"

@@ -196,3 +196,14 @@ export const getProductByIdInCart = async (req, res) => {
         res.status(500).json({ message: 'Error getting product by id in cart', error: error.message });
     }
 };
+
+//select random 3 products
+export const getRandomProducts = async (req, res) => {
+    try {
+        const products = await Product.find().limit(3);
+        res.status(200).json({ products });
+    } catch (error) {
+        console.error('Error getting random products:', error);
+        res.status(500).json({ message: 'Error getting random products', error: error.message });
+    }
+};

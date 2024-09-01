@@ -1,7 +1,11 @@
-import HomeLayout from "../layouts/HomeLayout";
-import HomePage from "../pages/common/HomePage";
-
-
+import HomeLayout from '../layouts/HomeLayout';
+import HomePage from '../pages/common/HomePage';
+import SignUpPage from '../pages/common/SignUpPage';
+import TermsAndConditions from '../components/common/info-pages/TermsAndConditions';
+import PrivacyPolicy from '../components/common/info-pages/PrivacyPolicy';
+import ShippingAndReturn from '../components/common/info-pages/ShippingAndReturn';
+import CustomerSupport from '../components/common/info-pages/CustomerSupport';
+import Faq from '../components/common/info-pages/Faq';
 
 export const routes = [
     {
@@ -20,10 +24,30 @@ export const routes = [
             //     path: '/login',
             //     element: <LoginPage />
             // },
-            // {
-            //     path: '/signup',
-            //     element: <SignupPage />
-            // },
+            {
+                path: '/signup',
+                element: <SignUpPage />
+            },
+            {
+                path: '/terms-and-conditions',
+                element: <TermsAndConditions />
+            },
+            {
+                path: '/privacy-policy',
+                element: <PrivacyPolicy />
+            },
+            {
+                path: '/customer-support',
+                element: <CustomerSupport />
+            },
+            {
+                path: '/shipping-returns',
+                element: <ShippingAndReturn />
+            },
+            {
+                path: '/faq',
+                element: <Faq />
+            }
         ]
     }
 ]

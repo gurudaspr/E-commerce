@@ -1,5 +1,5 @@
 import express from 'express';
-import { getProducts, getProductById, addProduct, updateProduct, deleteProduct, restoreProduct, getProductByIdInCart } from '../controllers/product.controller.js';
+import { getProducts, getProductById, addProduct, updateProduct, deleteProduct, restoreProduct, getProductByIdInCart, getRandomProducts } from '../controllers/product.controller.js';
 import { verifyJwtToken ,verifyRole } from '../middlewares/verifyJwtToken.js';
 import  upload  from '../middlewares/upload.middleware.js';
 
@@ -16,6 +16,10 @@ router.delete('/:id', verifyJwtToken, verifyRole('admin'), deleteProduct);
 router.post('/restore/:id', verifyJwtToken, verifyRole('admin'), restoreProduct);
 
 router.post('/inCart',getProductByIdInCart);
+router.get('/random', getRandomProducts);
+
+
+
 
 
 

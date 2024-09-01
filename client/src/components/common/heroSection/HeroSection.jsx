@@ -3,7 +3,7 @@ import { Button, Typography } from '@material-tailwind/react';
 
 const HeroSection = () => {
   return (
-    <div className="relative bg-gray-800 h-screen flex items-center justify-center">
+    <div className="relative bg-gray-800  h-screen flex items-center justify-center ">
       <div className="absolute inset-0 bg-black/50"></div> {/* Overlay */}
 
       <div className="container mx-auto text-center px-4 lg:px-0 relative z-10">

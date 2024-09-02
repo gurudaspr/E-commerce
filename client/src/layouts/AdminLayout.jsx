@@ -1,9 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react';
+import Sidebar from '../components/admin/Sidebar';
+import Content from '../pages/admin/Content';
 
 const AdminLayout = () => {
-  return (
-    <div>AdminLayout</div>
-  )
-}
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-export default AdminLayout
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  return (
+    <>
+      <div className="drawer flex lg:drawer-open">
+        <Sidebar />
+        <div className="flex flex-col flex-1 w-3/4">
+          {/* <AdminNavbar /> */}
+          <Content />
+
+        </div>
+
+      </div>
+    </>
+  );
+};
+
+export default AdminLayout;

@@ -13,13 +13,14 @@ import AdminLayout from '../layouts/AdminLayout';
 import UserLayout from '../layouts/UserLayout';
 import ProtectedRoute from '../protected-route/ProtectRoute';
 import Unauthorized from '../protected-route/Unauthorized';
+import AuthChecker from '../protected-route/AuthChecker';
 
 
 
 export const routes = [
     {
         path: '/',
-        element: <HomeLayout />,
+        element: <AuthChecker><HomeLayout /></AuthChecker>,
         children: [
             {
                 index: true,

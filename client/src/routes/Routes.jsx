@@ -9,6 +9,12 @@ import Faq from '../components/common/info-pages/Faq';
 import EmailSentpage from '../pages/common/EmailSentpage';
 import EmailVerification from '../components/common/auth/EmailVerification';
 import SignInPage from '../pages/common/SignInPage';
+import AdminLayout from '../layouts/AdminLayout';
+import UserLayout from '../layouts/UserLayout';
+import ProtectedRoute from '../protected-route/ProtectRoute';
+import Unauthorized from '../protected-route/Unauthorized';
+
+
 
 export const routes = [
     {
@@ -36,7 +42,7 @@ export const routes = [
                 element: <EmailSentpage />
             },
             {
-                path : '/verify-email/:token',
+                path: '/verify-email/:token',
                 element: <EmailVerification />
 
             },
@@ -61,5 +67,37 @@ export const routes = [
                 element: <Faq />
             }
         ]
+    },
+
+
+    //admin routes
+    {
+        element: <ProtectedRoute requiredRole="admin"><AdminLayout /> </ProtectedRoute>,
+        children: [
+            {
+                path: '/admin-dashboard',
+                element: <h1> admin Dashboard</h1>
+            }
+        ]
+    },
+
+    //user routes
+    {
+        element: <ProtectedRoute requiredRole="user"><UserLayout /> </ProtectedRoute>,
+        children: [
+            {
+                path: '/user-dashboard',
+                element: <h1> user Dashboard</h1>
+            }
+        ]
+    },
+
+
+
+    // Unauthorized route
+    {
+        path: '/unauthorized',
+        element: <Unauthorized />
     }
+
 ]

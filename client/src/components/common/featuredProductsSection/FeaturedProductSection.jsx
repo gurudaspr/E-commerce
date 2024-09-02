@@ -54,7 +54,6 @@ export function FeaturedProductSection() {
     const [products, setProducts] = useState([]);
     const fetchProducts = async () => {
         const response = await axiosInstance.get('/products/random');
-        console.log(response.data);
         setProducts(response.data.products);
     }
     useEffect(() => {

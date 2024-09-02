@@ -10,8 +10,9 @@ import {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, replace, useNavigate } from "react-router-dom";
 import useSignIn from '../../../hooks/useSignIn.js';
+import { useAuthStore } from "../../../store/useAuthStore.js";
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -20,6 +21,7 @@ const LoginSchema = Yup.object().shape({
 
 function SignIn() {
     const navigate = useNavigate();
+    const { role } = useAuthStore();
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(LoginSchema),
     });
@@ -27,9 +29,13 @@ function SignIn() {
 
     useEffect(() => {
         if (success) {
-            navigate('/dashboard'); // Redirect to a protected route or dashboard
+            if (role === 'admin') {
+                navigate('/admin-dashboard', { replace: true });
+            } else if (role === 'user') {
+                navigate('/user-dashboard', { replace: true });
+            }
         }
-    }, [success, navigate]);
+    }, [success, role, navigate]);
 
     const onSubmit = (data) => {
         signIn(data);
@@ -89,11 +95,11 @@ function SignIn() {
                                         {errors.password.message}
                                     </span>
                                 )}
-                                
+
                             </div>
                             <Typography variant="small" className="text-gray-600 text-xs text-right -my-3 ">
-                                    <Link to="/forgot-password" className="text-gray-900 font-semibold hover:text-red-400 ">Forgot your password?</Link>
-                                </Typography>
+                                <Link to="/forgot-password" className="text-gray-900 font-semibold hover:text-red-400 ">Forgot your password?</Link>
+                            </Typography>
 
                             {/* Submit Button */}
                             <Button type="submit" loading={isLoading} size="lg" color="gray" fullWidth>

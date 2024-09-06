@@ -20,7 +20,8 @@ import AuthChecker from '../protected-route/AuthChecker';
 export const routes = [
     {
         path: '/',
-        element: <AuthChecker><HomeLayout /></AuthChecker>,
+        // element: <AuthChecker><HomeLayout /></AuthChecker>,
+        element:<HomeLayout />,
         children: [
             {
                 index: true,

@@ -10,8 +10,9 @@ import {
     MenuList,
     MenuItem,
 } from "@material-tailwind/react";
-import { Bars3Icon, XMarkIcon, UserIcon, ShoppingBagIcon } from "@heroicons/react/24/solid";
+import { Bars3Icon, XMarkIcon, UserIcon, ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
 
 function NavItem({ label }) {
     const path = label === "Home" ? "/" : `/${label.toLowerCase()}`;
@@ -62,27 +63,24 @@ const NavbarUser = () => {
                 <div className="hidden lg:flex items-center gap-4">
                     <Link to="/cart">
                         <IconButton variant="text" color="blue-gray-900">
-                            <ShoppingBagIcon className="h-8 w-8" />
+                            <ShoppingCartIcon className="h-8 w-8 text-green-700" />
                         </IconButton>
                     </Link>
                     <Menu>
                         <MenuHandler>
                             <IconButton variant="text" color="blue-gray-900">
-                                <UserIcon className="h-8 w-8" />
+                                <FaUser  className="h-6 w-6 text-orange-900" />
                             </IconButton>
                         </MenuHandler>
                         <MenuList>
                             <MenuItem onClick={() => navigate('/profile')}>View Profile</MenuItem>
                             <MenuItem onClick={() => navigate('/orders')}>Orders</MenuItem>
-                            <MenuItem onClick={()=>{handleLogut}} >Logout</MenuItem>
-                
+                            <MenuItem onClick={() => { handleLogut }} >Logout</MenuItem>
+
                         </MenuList>
                     </Menu>
 
                 </div>
-
-
-
                 <IconButton
                     size="sm"
                     variant="text"
@@ -100,27 +98,10 @@ const NavbarUser = () => {
             <Collapse open={open}>
                 <div className="mt-2 rounded-xl bg-white py-2">
                     <NavList />
-                </div>
-                <div className=" lg:hidden items-center gap-4">
-                    <Link to="/cart">
-                        <IconButton variant="text" color="blue-gray-900">
-                            <ShoppingBagIcon className="h-8 w-8" />
-                        </IconButton>
-                    </Link>
-                    <Menu>
-                        <MenuHandler>
-                            <IconButton variant="text" color="blue-gray-900">
-                                <UserIcon className="h-8 w-8" />
-                            </IconButton>
-                        </MenuHandler>
-                        <MenuList>
-                            <MenuItem onClick={() => navigate('/profile')}>View Profile</MenuItem>
-                            <MenuItem onClick={() => navigate('/orders')}>Orders</MenuItem>
-                            <MenuItem onClick={()=>{handleLogut}} >Logout</MenuItem>
-                
-                        </MenuList>
-                    </Menu>
-
+                    <ul className="mb-4 mt-2 flex flex-col gap-3 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-8">
+                        <NavItem label="Cart" />
+                        <NavItem label="Profile" />
+                    </ul>
                 </div>
             </Collapse>
         </Navbar>

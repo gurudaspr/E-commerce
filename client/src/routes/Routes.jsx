@@ -14,14 +14,15 @@ import UserLayout from '../layouts/UserLayout';
 import ProtectedRoute from '../protected-route/ProtectRoute';
 import Unauthorized from '../protected-route/Unauthorized';
 import AuthChecker from '../protected-route/AuthChecker';
+import UserDashboardPage from '../pages/user/UserDashboardPage';
 
 
 
 export const routes = [
     {
         path: '/',
-        // element: <AuthChecker><HomeLayout /></AuthChecker>,
-        element:<HomeLayout />,
+        element: <AuthChecker><HomeLayout /></AuthChecker>,
+        // element:<HomeLayout />,
         children: [
             {
                 index: true,
@@ -89,7 +90,7 @@ export const routes = [
         children: [
             {
                 path: '/user-dashboard',
-                element: <h1> user Dashboard</h1>
+                element: <UserDashboardPage />
             }
         ]
     },

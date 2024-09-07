@@ -12,7 +12,7 @@ const UserDashboardPage = () => {
     if (error) return <div>Error: {error}</div>;
     return (
         <div className="mx-auto container flex flex-col items-center justify-center">
-            <div className=" grid grid-cols-1 gap-8 2xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-2">
+            <div className=" grid grid-cols-1 gap-8 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2">
                 {products.map((product) => (
                     <ProductCard
                         key={product.id}

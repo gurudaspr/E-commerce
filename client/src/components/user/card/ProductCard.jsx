@@ -22,7 +22,7 @@ const ProductCard = ({ img, name, price, rating = 3, onAddToCart }) => {
               {name}
             </Typography>
             <Typography variant="h6" className="text-gray-600">
-              {price}
+            ₹{price}
             </Typography>
           </div>
 

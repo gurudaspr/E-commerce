@@ -62,13 +62,13 @@ const NavbarUser = () => {
                 </div>
                 <div className="hidden lg:flex items-center gap-4">
                     <Link to="/cart">
-                        <IconButton variant="text" color="blue-gray-900">
+                        <IconButton variant="text" color="blue-gray">
                             <ShoppingCartIcon className="h-8 w-8 text-green-700" />
                         </IconButton>
                     </Link>
                     <Menu>
                         <MenuHandler>
-                            <IconButton variant="text" color="blue-gray-900">
+                            <IconButton variant="text" color="blue-gray">
                                 <FaUser  className="h-6 w-6 text-orange-900" />
                             </IconButton>
                         </MenuHandler>

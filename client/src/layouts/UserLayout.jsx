@@ -8,14 +8,9 @@ const UserLayout = () => {
     return (
         <>
             <NavbarUser />
-            <div className='flex pt-24'>
-                <div className=' md:w-1/6'>
-                    <FilterSidebar />
-                </div>
-                <div className='w-full md:w-3/4 '>
+           
                     <Outlet />
-                </div>
-            </div>
+    
             {/* <Footer /> */}
         </>
     );

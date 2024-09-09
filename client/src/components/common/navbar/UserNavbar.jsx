@@ -15,7 +15,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 
 function NavItem({ label }) {
-    const path = label === "Home" ? "/" : `/${label.toLowerCase()}`;
+    const path = label === "Home" ? "/user-dashboard" : label === "Products" ? "/user/products" : `/${label.toLowerCase()}`;
     return (
         <Link to={path}>
             <Typography as="li" color="blue-gray" className="p-1 font-semibold hover:opacity-80 ease-in-out duration-200">

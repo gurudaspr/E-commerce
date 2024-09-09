@@ -90,6 +90,9 @@ export const routes = [
         children: [
             {
                 path: '/user-dashboard',
+                element: <HomePage />
+            },{
+                path: 'user/products',
                 element: <UserDashboardPage />
             }
         ]

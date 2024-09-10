@@ -36,7 +36,6 @@ export default defineConfig({
       '/api/v1/cart': {
         target: 'http://localhost:5004',  // Replace with the appropriate service URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/cart/, '/cart'),
       },
 
     
@@ -44,27 +43,23 @@ export default defineConfig({
       '/api/v1/orders': {
         target: 'http://localhost:5005',  // Replace with the appropriate service URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/orders/, '/orders'),
       },
 
       // Proxy for payments
       '/api/v1/payments': {
         target: 'http://localhost:5005',  // Replace with the appropriate service URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/payments/, '/payments'),
       },
 
       // Proxy for addresses
       '/api/v1/addresses': {
         target: 'http://localhost:5005',  // Replace with the appropriate service URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/addresses/, '/addresses'),
       },
       // Proxy for coupons
       '/api/v1/coupons': {
         target: 'http://localhost:5006',  // Replace with the appropriate service URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/coupons/, '/coupons'),
       },
     },
   },

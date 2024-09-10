@@ -11,7 +11,6 @@ const useFetchCategories = () => {
       try {
         setIsLoading(true);
         const response = await axiosInstance.get('/categories');
-        console.log(response.data.categories);
         setCategories(response.data.categories);
         setIsLoading(false);
       } catch (err) {

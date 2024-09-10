@@ -6,7 +6,7 @@ const AuthChecker = ({ children }) => {
 
   // Redirect to the appropriate dashboard based on role
   if (isAuthenticated && role === 'user') {
-    return <Navigate to="/user-dashboard" />;
+    return <Navigate to="/user/home" />;
   }
 
   // If not authenticated or no matching role, render children or fallback

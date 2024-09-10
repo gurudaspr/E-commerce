@@ -30,9 +30,9 @@ function SignIn() {
     useEffect(() => {
         if (success) {
             if (role === 'admin') {
-                navigate('/admin-dashboard', { replace: true });
+                navigate('/admin/dashboard', { replace: true });
             } else if (role === 'user') {
-                navigate('/user-dashboard', { replace: true });
+                navigate('/user/home', { replace: true });
             }
         }
     }, [success, role, navigate]);

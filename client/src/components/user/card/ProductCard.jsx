@@ -1,7 +1,8 @@
 import { Card, CardBody, Typography, Button } from "@material-tailwind/react";
 import { FaStar, FaShoppingCart } from "react-icons/fa";
 
-const ProductCard = ({ img, name, price, rating = 3, onAddToCart }) => {
+const ProductCard = ({  img, name, price, rating = 3, handleAddToCart,handleBuyNow, productId }) => {
+
   return (
     <Card shadow={false} className="border border-gray-300 w-[250px] flex flex-col h-full transition-transform hover:scale-105">
       <CardBody className="flex flex-col justify-between h-full pb-4">
@@ -22,20 +23,20 @@ const ProductCard = ({ img, name, price, rating = 3, onAddToCart }) => {
               {name}
             </Typography>
             <Typography variant="h6" className="text-gray-600">
-            ₹{price}
+              ₹{price}
             </Typography>
           </div>
 
           {/* Rating System */}
           <div className="flex pb-4">
-                {Array.from({ length: rating }).map((_, i) => (
-                  <FaStar key={i} className=" text-yellow-900" />
-                ))}
-                {Array.from({ length: 5 - rating }).map((_, i) => (
-                  <FaStar key={i} className=" text-gray-300" />
-                ))}
-                 <Typography className="ml-2 text-sm text-gray-500">({rating})</Typography>
-              </div>
+            {Array.from({ length: rating }).map((_, i) => (
+              <FaStar key={i} className=" text-yellow-900" />
+            ))}
+            {Array.from({ length: 5 - rating }).map((_, i) => (
+              <FaStar key={i} className=" text-gray-300" />
+            ))}
+            <Typography className="ml-2 text-sm text-gray-500">({rating})</Typography>
+          </div>
 
           {/* Add to Cart and Buy Now Buttons */}
           <div className="flex justify-between mt-auto">
@@ -43,7 +44,7 @@ const ProductCard = ({ img, name, price, rating = 3, onAddToCart }) => {
               size="sm"
               color="blue-gray"
               className="mt-2"
-              onClick={onAddToCart} // Function to handle adding to cart
+              onClick={() => { handleAddToCart(productId) }} // Function to handle adding to cart
             >
               <FaShoppingCart className="h-4 w-4" />
             </Button>
@@ -51,7 +52,7 @@ const ProductCard = ({ img, name, price, rating = 3, onAddToCart }) => {
               size="sm"
               color="light-green"
               className="mt-2"
-              onClick={onAddToCart} // Function to handle adding to cart
+              onClick={()=>{handleBuyNow(productId)}} // Function to handle adding to cart
             >
               Buy Now
             </Button>

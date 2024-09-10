@@ -14,9 +14,10 @@ import { Bars3Icon, XMarkIcon, UserIcon, ShoppingCartIcon } from "@heroicons/rea
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { useAuthStore } from "../../../store/useAuthStore";
+import toast from "react-hot-toast";
 
 function NavItem({ label }) {
-    const path = label === "Home" ? "/user-dashboard" : label === "Products" ? "/user/products" : `/${label.toLowerCase()}`;
+    const path = label === "Home" ? "/user/home" : label === "Products" ? "/user/products" : `/${label.toLowerCase()}`;
     return (
         <Link to={path}>
             <Typography as="li" color="blue-gray" className="p-1 font-semibold hover:opacity-80 ease-in-out duration-200">
@@ -50,7 +51,8 @@ const NavbarUser = () => {
 
     const handleLogout = () => {
         logout();
-        navigate("/login", { replace: true });
+        navigate("/", { replace: true });
+        toast.success('You have been logged out successfully');
     };
 
 
@@ -59,7 +61,7 @@ const NavbarUser = () => {
             <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
                 <Typography
                     as={Link}
-                    to="/"
+                    to="/user/home"
                     color="blue-gray"
                     className="mr-4 cursor-pointer text-2xl font-bold"
                 >

@@ -11,20 +11,13 @@ export const addCart = async (req, res) => {
 
         const existingCart = await Cart.findOne({ user: userId });
         if (existingCart) {
-            // Check if the product is already in the cart
-            const existingProuct = existingCart.cartItems.find(item => item.product.toString() === productId);
-            if (existingProuct) {
-                existingProuct.quantity += 1;
-                await existingCart.save();
-                return res.status(201).json(existingCart);
-            }
             // Add the product to the  empty cart
             existingCart.cartItems.push({
                 product: productId,
                 createdAt: Date.now()
             });
             await existingCart.save();
-            return res.status(201).json(existingCart);
+            return res.status(201).json({ message: 'Product added to cart successfully', cart: existingCart });
         }
         // Create a new cart and add the product to it
         const cart = new Cart({
@@ -35,7 +28,7 @@ export const addCart = async (req, res) => {
             }]
         });
         await cart.save();
-        res.status(201).json(cart);
+        res.status(201).json({ message: 'Product added to cart successfully', cart });
     }
     catch (err) {
         console.log(" error in adding cart", err);

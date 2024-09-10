@@ -131,7 +131,7 @@ export const forgotPassword = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid email' });
+            return res.status(400).json({ message: 'No user found with this email' });
         }
         if (!user.isVerified) {
             return res.status(400).json({ message: 'Please verify your email first' });
@@ -139,17 +139,37 @@ export const forgotPassword = async (req, res) => {
         const verificationToken = generateEmailToken();
         user.verificationToken = verificationToken;
         await user.save();
-        const verificationUrl = `http://localhost:5001/auth/reset-password?token=${verificationToken}`;
+        const verificationUrl = `${process.env.RESET_PASSWORD_LINK}/${verificationToken}`
         const subject = 'Reset your password';
         const text = `Please click the link below to reset your password.`;
         await sendVerificationEmail(email, verificationUrl, subject, text);
-        res.status(200).send('Password reset email sent successfully');
+        res.status(200).send({message: 'Password reset email sent successfully'});
     }
     catch (error) {
         console.error('Error sending password reset email', error);
         res.status(500).json({ message: 'Error sending password reset email', error: error.message });
     }
 }
+
+// export const resetPasswordverify = async (req, res) => {
+//     const { token } = req.params;
+//     try {
+//         const user = await User.findOne({ verificationToken: token });
+//         if (!user) {
+//             return res.status(400).send({ message: 'Invalid token' });
+//         }
+//         user.isVerified = true;
+//         user.verificationToken = undefined; // Remove the token once verified
+//         await user.save();
+
+//         res.status(200).send('Email verified successfully');
+//     }
+//     catch (error) {
+//         console.error('Error verifying email', error);
+//         res.status(500).json({ message: 'Error verifying email', error: error.message });
+//     }
+// }
+
 
 export const resetPassword = async (req, res) => {
     const { token, newPassword, confirmNewPassword } = req.body;
@@ -159,7 +179,7 @@ export const resetPassword = async (req, res) => {
         const user = await User.findOne({ verificationToken: token });
 
         if (!user) {
-            return res.status(400).json({ message: 'Invalid token' });
+            return res.status(400).json({ message: 'Error resetting password' });
         }
         if (!user.isVerified) {
             return res.status(400).json({ message: 'Please verify your email first' });

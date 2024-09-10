@@ -15,6 +15,8 @@ import ProtectedRoute from '../protected-route/ProtectRoute';
 import Unauthorized from '../protected-route/Unauthorized';
 import AuthChecker from '../protected-route/AuthChecker';
 import UserDashboardPage from '../pages/user/UserDashboardPage';
+import ForgotPassword from '../components/common/auth/ForgotPassword';
+import ResetPassword from '../components/common/auth/ResetPassword';
 
 
 
@@ -50,6 +52,16 @@ export const routes = [
 
             },
             {
+                path: '/forgot-password',
+                element: <ForgotPassword />
+
+            },
+            {
+                path: '/reset-password/:token',
+                element: <ResetPassword />
+            },
+
+            {
                 path: '/terms-and-conditions',
                 element: <TermsAndConditions />
             },
@@ -72,6 +84,20 @@ export const routes = [
         ]
     },
 
+    //user routes
+    {
+        path: '/user',
+        element: <ProtectedRoute requiredRole="user"><UserLayout /> </ProtectedRoute>,
+        children: [
+            {
+                path: 'home',
+                element: <HomePage />
+            }, {
+                path: 'products',
+                element: <UserDashboardPage />
+            }
+        ]
+    },
 
     //admin routes
     {
@@ -83,21 +109,6 @@ export const routes = [
             }
         ]
     },
-
-    //user routes
-    {
-        element: <ProtectedRoute requiredRole="user"><UserLayout /> </ProtectedRoute>,
-        children: [
-            {
-                path: '/user-dashboard',
-                element: <HomePage />
-            },{
-                path: 'user/products',
-                element: <UserDashboardPage />
-            }
-        ]
-    },
-
 
 
     // Unauthorized route

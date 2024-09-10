@@ -7,7 +7,7 @@ import FilterSidebar from '../../components/user/filter/FilterSidebar';
 import useAddToCart from '../../hooks/useAddToCart';
 
 
-const UserDashboardPage = () => {
+const ProductsPage = () => {
     const { filteredProducts, isLoading, error } = useProductStore();
     useFetchProducts(); // Fetch products when component mounts
     const { addToCart } = useAddToCart();
@@ -26,7 +26,7 @@ const UserDashboardPage = () => {
     return (
 
 
-        <div className='flex pt-24'>
+        <div className='flex pt-24 min-h-screen '>
             <div className=' md:w-1/6'>
                 <FilterSidebar />
             </div>
@@ -53,9 +53,7 @@ const UserDashboardPage = () => {
                 </div>
             </div>
         </div>
-
-
     );
 };
 
-export default UserDashboardPage;
+export default ProductsPage;

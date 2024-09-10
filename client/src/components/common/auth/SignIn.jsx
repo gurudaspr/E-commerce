@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Card,
     Input,
@@ -10,7 +10,8 @@ import {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { Link, replace, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import useSignIn from '../../../hooks/useSignIn.js';
 import { useAuthStore } from "../../../store/useAuthStore.js";
 
@@ -26,6 +27,9 @@ function SignIn() {
         resolver: yupResolver(LoginSchema),
     });
     const { signIn, isLoading, success } = useSignIn();
+
+    const [passwordShown, setPasswordShown] = useState(false);
+    const togglePasswordVisibility = () => setPasswordShown(prev => !prev);
 
     useEffect(() => {
         if (success) {
@@ -79,24 +83,34 @@ function SignIn() {
                                     </span>
                                 )}
                             </div>
+
                             {/* Password Input */}
                             <div className="relative">
                                 <Input
                                     size="lg"
                                     variant="outlined"
                                     label="Password"
-                                    type="password"
+                                    type={passwordShown ? "text" : "password"}
                                     placeholder="********"
                                     className="w-full"
                                     {...register("password")}
+                                    icon={
+                                        <i onClick={togglePasswordVisibility}>
+                                            {passwordShown ? (
+                                                <EyeIcon className="h-5 w-5 cursor-pointer" />
+                                            ) : (
+                                                <EyeSlashIcon className="h-5 w-5 cursor-pointer" />
+                                            )}
+                                        </i>
+                                    }
                                 />
                                 {errors.password && (
                                     <span className="absolute text-red-300 text-xs left-2">
                                         {errors.password.message}
                                     </span>
                                 )}
-
                             </div>
+
                             <Typography variant="small" className="text-gray-600 text-xs text-right -my-3 ">
                                 <Link to="/forgot-password" className="text-gray-900 font-semibold hover:text-red-400 ">Forgot your password?</Link>
                             </Typography>
@@ -109,7 +123,6 @@ function SignIn() {
                                 <Typography variant="small">
                                     Don’t have an account? <Link to="/signup" className="text-gray-900 font-semibold">Sign up</Link>
                                 </Typography>
-
 
                                 <Typography
                                     variant="small"

@@ -14,9 +14,10 @@ import UserLayout from '../layouts/UserLayout';
 import ProtectedRoute from '../protected-route/ProtectRoute';
 import Unauthorized from '../protected-route/Unauthorized';
 import AuthChecker from '../protected-route/AuthChecker';
-import UserDashboardPage from '../pages/user/UserDashboardPage';
+import UserDashboardPage from '../pages/user/ProductsPage';
 import ForgotPassword from '../components/common/auth/ForgotPassword';
 import ResetPassword from '../components/common/auth/ResetPassword';
+import ProductsPage from '../pages/user/ProductsPage';
 
 
 
@@ -31,54 +32,54 @@ export const routes = [
                 element: <HomePage />
             },
             {
-                path: '/products',
-                element: <h1>Products</h1>
+                path: 'products',
+                element: <ProductsPage />
             },
             {
-                path: '/login',
+                path: 'login',
                 element: <SignInPage />
             },
             {
-                path: '/signup',
+                path: 'signup',
                 element: <SignUpPage />
             },
             {
-                path: '/email-sent',
+                path: 'email-sent',
                 element: <EmailSentpage />
             },
             {
-                path: '/verify-email/:token',
+                path: 'verify-email/:token',
                 element: <EmailVerification />
 
             },
             {
-                path: '/forgot-password',
+                path: 'forgot-password',
                 element: <ForgotPassword />
 
             },
             {
-                path: '/reset-password/:token',
+                path: 'reset-password/:token',
                 element: <ResetPassword />
             },
 
             {
-                path: '/terms-and-conditions',
+                path: 'terms-and-conditions',
                 element: <TermsAndConditions />
             },
             {
-                path: '/privacy-policy',
+                path: 'privacy-policy',
                 element: <PrivacyPolicy />
             },
             {
-                path: '/customer-support',
+                path: 'customer-support',
                 element: <CustomerSupport />
             },
             {
-                path: '/shipping-returns',
+                path: 'shipping-returns',
                 element: <ShippingAndReturn />
             },
             {
-                path: '/faq',
+                path: 'faq',
                 element: <Faq />
             }
         ]
@@ -94,7 +95,29 @@ export const routes = [
                 element: <HomePage />
             }, {
                 path: 'products',
-                element: <UserDashboardPage />
+                element: <ProductsPage />
+            },
+
+
+            {
+                path: 'terms-and-conditions',
+                element: <TermsAndConditions />
+            },
+            {
+                path: 'privacy-policy',
+                element: <PrivacyPolicy />
+            },
+            {
+                path: 'customer-support',
+                element: <CustomerSupport />
+            },
+            {
+                path: 'shipping-returns',
+                element: <ShippingAndReturn />
+            },
+            {
+                path: 'faq',
+                element: <Faq />
             }
         ]
     },

@@ -1,11 +1,6 @@
 import { Typography } from "@material-tailwind/react";
-import {
-  AcademicCapIcon,
-  CurrencyDollarIcon,
-  UserGroupIcon,
-  ShieldCheckIcon
-} from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { useAuthStore } from '../../../store/useAuthStore';
 
 const links = [
   { name: "Shop", to: "/products" },
@@ -16,22 +11,23 @@ const links = [
   { name: "Privacy Policy", to: "/privacy-policy" },
 ];
 
-// const socialLinks = [
-//   { name: "Facebook", icon: <AcademicCapIcon className="h-6 w-6" />, href: "#" },
-//   { name: "Instagram", icon: <CurrencyDollarIcon className="h-6 w-6" />, href: "#" },
-//   { name: "Twitter", icon: <UserGroupIcon className="h-6 w-6" />, href: "#" },
-//   { name: "LinkedIn", icon: <ShieldCheckIcon className="h-6 w-6" />, href: "#" },
-// ];
-
-const currentYear = new Date().getFullYear();
-
 const Footer = () => {
+  const { isAuthenticated } = useAuthStore();
+
+  // If authenticated, prepend '/user' to the route paths
+  const modifiedLinks = links.map(link => ({
+    ...link,
+    to: isAuthenticated ? `/user${link.to}` : link.to,
+  }));
+
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-gray-800 text-white px-8 py-20">
+    <footer className="bg-gray-800 text-white px-8 py-16 ">
       <div className="container mx-auto flex flex-col items-center">
         {/* Links */}
-        <div className="flex flex-wrap items-center justify-center gap-8 pb-8">
-          {links.map((link, index) => (
+        <div className="flex flex-wrap items-center justify-center gap-8 pb-4">
+          {modifiedLinks.map((link, index) => (
             <ul key={index}>
               <li>
                 <Typography
@@ -46,15 +42,6 @@ const Footer = () => {
             </ul>
           ))}
         </div>
-
-        {/* Social Media Links */}
-        {/* <div className="flex gap-4 mb-8">
-          {socialLinks.map((social, index) => (
-            <a key={index} href={social.href} className="hover:text-gray-400">
-              {social.icon}
-            </a>
-          ))}
-        </div> */}
 
         {/* Copyright */}
         <Typography

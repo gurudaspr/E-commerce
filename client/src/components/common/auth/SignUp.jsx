@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Card,
     Input,
@@ -7,12 +7,12 @@ import {
     CardHeader,
     Typography,
 } from "@material-tailwind/react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import useSignup from '../../../hooks/useSignup.js';
-
 
 const SignupSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
@@ -27,6 +27,13 @@ function Signup() {
         resolver: yupResolver(SignupSchema),
     });
     const { signup, isLoading, success } = useSignup();
+
+    // State for toggling password visibility
+    const [passwordShown, setPasswordShown] = useState(false);
+    const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
+
+    const togglePasswordVisiblity = () => setPasswordShown((cur) => !cur);
+    const toggleConfirmPasswordVisiblity = () => setConfirmPasswordShown((cur) => !cur);
 
     useEffect(() => {
         if (success) {
@@ -92,16 +99,25 @@ function Signup() {
                                     </span>
                                 )}
                             </div>
-                            {/* Password Input */}
+                            {/* Password Input with Visibility Toggle */}
                             <div className="relative">
                                 <Input
                                     size="lg"
                                     variant="outlined"
                                     label="Password"
-                                    type="password"
+                                    type={passwordShown ? "text" : "password"} // Conditionally set input type
                                     placeholder="********"
                                     className="w-full"
                                     {...register("password")}
+                                    icon={
+                                        <i onClick={togglePasswordVisiblity}>
+                                            {passwordShown ? (
+                                                <EyeIcon className="h-5 w-5" />
+                                            ) : (
+                                                <EyeSlashIcon className="h-5 w-5" />
+                                            )}
+                                        </i>
+                                    }
                                 />
                                 {errors.password && (
                                     <span className="absolute text-red-300 text-xs  left-2">
@@ -109,16 +125,25 @@ function Signup() {
                                     </span>
                                 )}
                             </div>
-                            {/* Confirm Password Input */}
+                            {/* Confirm Password Input with Visibility Toggle */}
                             <div className="relative">
                                 <Input
                                     size="lg"
                                     variant="outlined"
                                     label="Confirm Password"
-                                    type="password"
+                                    type={confirmPasswordShown ? "text" : "password"} // Conditionally set input type
                                     placeholder="********"
                                     className="w-full"
                                     {...register("confirmPassword")}
+                                    icon={
+                                        <i onClick={toggleConfirmPasswordVisiblity}>
+                                            {confirmPasswordShown ? (
+                                                <EyeIcon className="h-5 w-5" />
+                                            ) : (
+                                                <EyeSlashIcon className="h-5 w-5" />
+                                            )}
+                                        </i>
+                                    }
                                 />
                                 {errors.confirmPassword && (
                                     <span className="absolute text-red-300 text-xs  left-2">

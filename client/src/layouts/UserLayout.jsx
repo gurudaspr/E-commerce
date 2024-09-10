@@ -1,17 +1,18 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import NavbarUser from '../components/common/navbar/UserNavbar';
-import FilterSidebar from '../components/user/filter/FilterSidebar';
 import Footer from '../components/common/footer/Footer';
-
 const UserLayout = () => {
     return (
         <>
             <NavbarUser />
-           
-                    <Outlet />
-    
-            {/* <Footer /> */}
+
+            <div className='pt-8  pb-16 min-h-screen'>
+                <Outlet />
+            </div>
+
+
+            <Footer />
         </>
     );
 }

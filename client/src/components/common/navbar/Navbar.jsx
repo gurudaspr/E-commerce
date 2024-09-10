@@ -42,7 +42,7 @@ const NavbarCommon = () => {
   }, []);
 
   return (
-    <Navbar color="transparent" fullWidth className="border-b border-blue-gray-300">
+    <Navbar  fullWidth className="fixed z-50 ">
       <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
         <Typography
           as={Link}

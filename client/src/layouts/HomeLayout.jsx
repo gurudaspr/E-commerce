@@ -7,7 +7,10 @@ const HomeLayout = () => {
     return (
         <>
             <NavbarCommon />
-            <Outlet />
+            <div className='pt-8  pb-16 min-h-screen'>
+                <Outlet />
+                </div>
+            
             <Footer />
         </>
     )

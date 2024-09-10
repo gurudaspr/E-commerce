@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   IconButton,
   Typography,
@@ -21,8 +21,11 @@ import {
   AdjustmentsHorizontalIcon,
 } from '@heroicons/react/24/outline';
 import { useProductStore } from '../../../store/useProductStore';
+import useFetchCategories from '../../../hooks/useFetchAllCategory';
 
 function FilterContent({ filters, handleSearchChange, handleFilterChange, open, handleOpen, clearFilters }) {
+  const { categories } = useFetchCategories();
+
   return (
     <>
       <div className="mb-2 flex items-center justify-between p-4">
@@ -48,19 +51,20 @@ function FilterContent({ filters, handleSearchChange, handleFilterChange, open, 
         />
       </div>
 
-      <FilterOptions 
-        open={open} 
-        handleOpen={handleOpen} 
+      <FilterOptions
+        open={open}
+        handleOpen={handleOpen}
         filters={filters}
         handleFilterChange={handleFilterChange}
+        categories={categories}
       />
     </>
   );
 }
 
 export default function FilterSidebar() {
-  const [open, setOpen] = React.useState(0);
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const [open, setOpen] = useState(0);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { filters, setFilter, applyFilters, clearFilters } = useProductStore();
 
   const handleOpen = (value) => {
@@ -124,8 +128,7 @@ export default function FilterSidebar() {
   );
 }
 
-function FilterOptions({ open, handleOpen, filters, handleFilterChange }) {
-  const categories = ['Footwear', 'Apparel']; // Add more categories as needed
+function FilterOptions({ open, handleOpen, filters, handleFilterChange, categories }) {
   const priceRanges = [
     'Below 500',
     '500 to 1000',
@@ -135,6 +138,19 @@ function FilterOptions({ open, handleOpen, filters, handleFilterChange }) {
   ];
   const sortOptions = ['price-low-high', 'price-high-low', 'newest-first', 'best-rating'];
 
+  const handleCategoryChange = (categoryId) => {
+    let updatedCategories;
+
+    // If the category is already selected, remove it, otherwise add it
+    if (filters.categories.includes(categoryId)) {
+      updatedCategories = filters.categories.filter((id) => id !== categoryId);
+    } else {
+      updatedCategories = [...filters.categories, categoryId];
+    }
+
+    // Update the filters with the new categories array
+    handleFilterChange('categories', updatedCategories);
+  };
   return (
     <List>
       {/* Category Filter */}
@@ -159,17 +175,12 @@ function FilterOptions({ open, handleOpen, filters, handleFilterChange }) {
         <AccordionBody className="py-1">
           <div className="space-y-2">
             {categories.map((category) => (
-              <div key={category}>
+              <div key={category._id}>
                 <Checkbox
-                  id={category}
-                  label={category}
-                  checked={filters.categories.includes(category)}
-                  onChange={() => {
-                    const newCategories = filters.categories.includes(category)
-                      ? filters.categories.filter(c => c !== category)
-                      : [...filters.categories, category];
-                    handleFilterChange('categories', newCategories);
-                  }}
+                  id={`category-${category._id}`}
+                  label={category.name}  // Display the category name
+                  checked={filters.categories.includes(category._id)}  // Match by _id
+                  onChange={() => handleCategoryChange(category._id)}  // Handle filter by _id
                 />
               </div>
             ))}
@@ -177,6 +188,7 @@ function FilterOptions({ open, handleOpen, filters, handleFilterChange }) {
         </AccordionBody>
       </Accordion>
 
+      {/* Other filters (Price Range, Sort) remain the same */}
       {/* Price Range Filter */}
       <Accordion
         open={open === 2}

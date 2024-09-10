@@ -7,22 +7,19 @@ export const useProductStore = create((set, get) => ({
   error: null,
   filters: {
     categories: [],
-    priceRange: [], // This should be an array of selected ranges
+    priceRange: [],
     sortBy: [],
     searchQuery: '',
   },
 
-  // Actions to update the state
   setProducts: (products) => set({ products, filteredProducts: products }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
 
-  // Filter actions
   setFilter: (filterType, value) => set((state) => ({
     filters: { ...state.filters, [filterType]: value },
   })),
 
-  // Clear all filters
   clearFilters: () => set((state) => ({
     filters: {
       categories: [],
@@ -32,16 +29,16 @@ export const useProductStore = create((set, get) => ({
     }
   })),
 
-  // Apply filters
   applyFilters: () => {
     const { products, filters } = get();
     let filtered = [...products];
 
     // Apply category filter
     if (filters.categories.length > 0) {
-      filtered = filtered.filter(product => filters.categories.includes(product.category));
+      filtered = filtered.filter(product => 
+        product.category && filters.categories.includes(product.category._id)
+      );
     }
-
     // Apply price range filter
     if (filters.priceRange.length > 0) {
       filtered = filtered.filter(product => {
@@ -60,7 +57,7 @@ export const useProductStore = create((set, get) => ({
     // Apply search query
     if (filters.searchQuery) {
       const query = filters.searchQuery.toLowerCase();
-      filtered = filtered.filter(product => 
+      filtered = filtered.filter(product =>
         product.name.toLowerCase().includes(query) ||
         product.description.toLowerCase().includes(query)
       );
@@ -88,5 +85,5 @@ export const useProductStore = create((set, get) => ({
     }
 
     set({ filteredProducts: filtered });
-  }
+  },
 }));

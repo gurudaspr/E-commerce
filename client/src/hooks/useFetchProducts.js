@@ -11,7 +11,8 @@ const useFetchProducts = () => {
       try {
         const response = await axiosInstance.get('/products');
         setProducts(response.data.products);
-        applyFilters(); // Apply filters after fetching products
+        console.log(response.data.products);
+        applyFilters();
       } catch (error) {
         setError(error.message);
       } finally {

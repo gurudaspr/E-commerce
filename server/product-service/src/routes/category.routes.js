@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 // Category routes
-router.get('/', verifyJwtToken, getAllCategories);
+router.get('/', getAllCategories);
 router.get('/:id', verifyJwtToken, getCategoryById);
 router.post('/', verifyJwtToken, verifyRole('admin'), createCategory);
 router.put('/:id', verifyJwtToken, verifyRole('admin'), updateCategory);

@@ -13,6 +13,7 @@ import {
 import { Bars3Icon, XMarkIcon, UserIcon, ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
+import { useAuthStore } from "../../../store/useAuthStore";
 
 function NavItem({ label }) {
     const path = label === "Home" ? "/user-dashboard" : label === "Products" ? "/user/products" : `/${label.toLowerCase()}`;
@@ -38,6 +39,7 @@ const NavbarUser = () => {
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
     const handleOpen = () => setOpen((cur) => !cur);
+    const { logout } = useAuthStore();
 
     React.useEffect(() => {
         window.addEventListener(
@@ -46,8 +48,14 @@ const NavbarUser = () => {
         );
     }, []);
 
+    const handleLogout = () => {
+        logout();
+        navigate("/login", { replace: true });
+    };
+
+
     return (
-        <Navbar  fullWidth className="fixed z-50  ">
+        <Navbar fullWidth className="fixed z-50  ">
             <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
                 <Typography
                     as={Link}
@@ -69,13 +77,13 @@ const NavbarUser = () => {
                     <Menu>
                         <MenuHandler>
                             <IconButton variant="text" color="blue-gray">
-                                <FaUser  className="h-6 w-6 text-orange-900" />
+                                <FaUser className="h-6 w-6 text-orange-900" />
                             </IconButton>
                         </MenuHandler>
                         <MenuList>
                             <MenuItem onClick={() => navigate('/profile')}>View Profile</MenuItem>
                             <MenuItem onClick={() => navigate('/orders')}>Orders</MenuItem>
-                            <MenuItem onClick={() => { handleLogut }} >Logout</MenuItem>
+                            <MenuItem onClick={handleLogout} >Logout</MenuItem>
 
                         </MenuList>
                     </Menu>

@@ -33,6 +33,7 @@ export const useAuthStore = create(
         set(() => ({
           token: null,
           isAuthenticated: false,
+          role: null,
         })),
     }),
     {

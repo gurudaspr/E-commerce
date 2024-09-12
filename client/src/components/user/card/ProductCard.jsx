@@ -1,5 +1,5 @@
 import { Card, CardBody, Typography, Button } from "@material-tailwind/react";
-import { FaStar, FaShoppingCart } from "react-icons/fa";
+import { ShoppingCartIcon ,StarIcon } from "@heroicons/react/24/solid";
 
 const ProductCard = ({  img, name, price, rating = 3, handleAddToCart,handleBuyNow, productId }) => {
 
@@ -30,10 +30,10 @@ const ProductCard = ({  img, name, price, rating = 3, handleAddToCart,handleBuyN
           {/* Rating System */}
           <div className="flex pb-4">
             {Array.from({ length: rating }).map((_, i) => (
-              <FaStar key={i} className=" text-yellow-900" />
+              <StarIcon key={i} className=" text-yellow-900 h-5 w-5" />
             ))}
             {Array.from({ length: 5 - rating }).map((_, i) => (
-              <FaStar key={i} className=" text-gray-300" />
+              <StarIcon key={i} className=" text-gray-300 h-5 w-5" />
             ))}
             <Typography className="ml-2 text-sm text-gray-500">({rating})</Typography>
           </div>
@@ -46,7 +46,7 @@ const ProductCard = ({  img, name, price, rating = 3, handleAddToCart,handleBuyN
               className="mt-2"
               onClick={() => { handleAddToCart(productId) }} // Function to handle adding to cart
             >
-              <FaShoppingCart className="h-4 w-4" />
+              <ShoppingCartIcon className="h-6 w-6" />
             </Button>
             <Button
               size="sm"

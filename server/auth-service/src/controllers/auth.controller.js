@@ -92,8 +92,9 @@ export const login = async (req, res) => {
 
 
 export const changePassword = async (req, res) => {
-    const { currentPassword, password, confirmPassword } = req.body;
-    const userId = req.user.userId
+    const { currentPassword, newPassword, confirmNewPassword } = req.body;
+    console.log(req.body, 'req.body');
+    const userId = req.user.userId;
 
     try {
         const user = await User.findOne({ _id: userId });
@@ -106,25 +107,27 @@ export const changePassword = async (req, res) => {
         if (!user.password) {
             return res.status(400).json({ message: 'Invalid email or password' });
         }
-        const isCurrentPassword = await argon2.verify(user.password, currentPassword);
-        if (!isCurrentPassword) {
-            return res.status(400).json({ message: 'Invalid current password' });
+        const isCurrentPasswordValid = await argon2.verify(user.password, currentPassword);
+        if (!isCurrentPasswordValid) {
+            return res.status(400).json({ message: 'Incorrect current password' });
         }
 
-        if (password !== confirmPassword) {
+        if (newPassword !== confirmNewPassword) {
             return res.status(400).json({ message: 'Passwords do not match' });
         }
-        const hashedPassword = await argon2.hash(password);
+        if (currentPassword === newPassword) {
+            return res.status(400).json({ message: 'New password cannot be the same as the current password' });
+        }
+        const hashedPassword = await argon2.hash(newPassword);
         user.password = hashedPassword;
         await user.save();
 
         res.status(200).json({ message: 'Password changed successfully' });
-    }
-    catch (error) {
+    } catch (error) {
         console.error('Error while changing password', error);
         res.status(500).json({ message: 'Error while changing password', error: error.message });
     }
-}
+};
 
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;

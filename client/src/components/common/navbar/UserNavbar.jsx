@@ -10,14 +10,14 @@ import {
     MenuList,
     MenuItem,
 } from "@material-tailwind/react";
-import { Bars3Icon, XMarkIcon, UserIcon, ShoppingCartIcon } from "@heroicons/react/24/solid";
+import { Bars3Icon, XMarkIcon, ShoppingCartIcon } from "@heroicons/react/24/solid";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUser } from "react-icons/fa";
+import Avatar from 'react-avatar';
 import { useAuthStore } from "../../../store/useAuthStore";
+import { useUserStore } from "../../../store/useUserStore";
 import toast from "react-hot-toast";
 
-function NavItem({ label }) {
-    const path = label === "Home" ? "/user/home" : label === "Products" ? "/user/products" : `/${label.toLowerCase()}`;
+function NavItem({ label, path }) {
     return (
         <Link to={path}>
             <Typography as="li" color="blue-gray" className="p-1 font-semibold hover:opacity-80 ease-in-out duration-200">
@@ -30,8 +30,8 @@ function NavItem({ label }) {
 function NavList() {
     return (
         <ul className="mb-4 mt-2 flex flex-col gap-3 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-8">
-            <NavItem label="Home" />
-            <NavItem label="Products" />
+            <NavItem label="Home" path="/user/home" />
+            <NavItem label="Products" path="/user/products" />
         </ul>
     );
 }
@@ -39,25 +39,40 @@ function NavList() {
 const NavbarUser = () => {
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
-    const handleOpen = () => setOpen((cur) => !cur);
-    const { logout } = useAuthStore();
+    const { logout } = useAuthStore(state => ({
+        logout: state.logout,
+    }));
+    const { name } = useUserStore(state => ({
+        name: state.name,
+    }));
+    const clearUser = useUserStore(state => state.clearUser);
+
+    const handleOpen = () => setOpen(cur => !cur);
 
     React.useEffect(() => {
-        window.addEventListener(
-            "resize",
-            () => window.innerWidth >= 960 && setOpen(false)
-        );
+        const handleResize = () => {
+            if (window.innerWidth >= 960) {
+                setOpen(false);
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
     }, []);
 
     const handleLogout = () => {
+        clearUser();
         logout();
         navigate("/", { replace: true });
         toast.success('You have been logged out successfully');
     };
 
+    const firstLetter = name ? name.charAt(0).toUpperCase() : '';
 
     return (
-        <Navbar fullWidth className="fixed z-50  ">
+        <Navbar fullWidth className="fixed z-50">
             <div className="container mx-auto flex items-center justify-between text-blue-gray-900">
                 <Typography
                     as={Link}
@@ -71,7 +86,7 @@ const NavbarUser = () => {
                     <NavList />
                 </div>
                 <div className="hidden lg:flex items-center gap-4">
-                    <Link to="/cart">
+                    <Link to="/user/cart">
                         <IconButton variant="text" color="blue-gray">
                             <ShoppingCartIcon className="h-8 w-8 text-green-700" />
                         </IconButton>
@@ -79,17 +94,21 @@ const NavbarUser = () => {
                     <Menu>
                         <MenuHandler>
                             <IconButton variant="text" color="blue-gray">
-                                <FaUser className="h-6 w-6 text-orange-900" />
+                                <Avatar
+                                    name={firstLetter}
+                                    size="38"
+                                    round={true}
+                                    color="#000000"
+                                    textSizeRatio={2}
+                                />
                             </IconButton>
                         </MenuHandler>
                         <MenuList>
-                            <MenuItem onClick={() => navigate('/profile')}>View Profile</MenuItem>
-                            <MenuItem onClick={() => navigate('/orders')}>Orders</MenuItem>
-                            <MenuItem onClick={handleLogout} >Logout</MenuItem>
-
+                            <MenuItem onClick={() => navigate('/user/profile')}>View Profile</MenuItem>
+                            <MenuItem onClick={() => navigate('/user/orders')}>Orders</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </MenuList>
                     </Menu>
-
                 </div>
                 <IconButton
                     size="sm"
@@ -106,16 +125,26 @@ const NavbarUser = () => {
                 </IconButton>
             </div>
             <Collapse open={open}>
-                <div className="mt-2 rounded-xl bg-white py-2">
-                    <NavList />
-                    <ul className="mb-4 mt-2 flex flex-col gap-3 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-8">
-                        <NavItem label="Cart" />
-                        <NavItem label="Profile" />
+                <div className="mt-2 rounded-xl bg-white py-2 px-4">
+                    <ul className="flex flex-col gap-4">
+                        <NavItem label="Profile" path="/user/profile" />
+                       <hr className=" bg-black "  />
+                        <NavItem label="Home" path="/user/home" />
+                        <NavItem label="Products" path="/user/products" />
+                        <NavItem label="Cart" path="/user/cart" />
+                        <Button
+                            size="sm"
+                            fullWidth
+                            className="mt-4"
+                            onClick={handleLogout}
+                        >
+                            Logout
+                        </Button>
                     </ul>
                 </div>
             </Collapse>
         </Navbar>
     );
-}
+};
 
 export default NavbarUser;

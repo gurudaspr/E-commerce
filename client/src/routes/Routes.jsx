@@ -14,10 +14,10 @@ import UserLayout from '../layouts/UserLayout';
 import ProtectedRoute from '../protected-route/ProtectRoute';
 import Unauthorized from '../protected-route/Unauthorized';
 import AuthChecker from '../protected-route/AuthChecker';
-import UserDashboardPage from '../pages/user/ProductsPage';
 import ForgotPassword from '../components/common/auth/ForgotPassword';
 import ResetPassword from '../components/common/auth/ResetPassword';
 import ProductsPage from '../pages/user/ProductsPage';
+import UserProfile from '../components/user/profile/UserProfile';
 
 
 
@@ -97,6 +97,11 @@ export const routes = [
                 path: 'products',
                 element: <ProductsPage />
             },
+            {
+                path: 'profile',
+                element: <UserProfile />
+
+            },
 
 
             {
@@ -123,11 +128,11 @@ export const routes = [
     },
 
     //admin routes
-    {
+    {   path: '/admin',
         element: <ProtectedRoute requiredRole="admin"><AdminLayout /> </ProtectedRoute>,
         children: [
             {
-                path: '/admin-dashboard',
+                path: 'dashboard',
                 element: <h1> admin Dashboard</h1>
             }
         ]

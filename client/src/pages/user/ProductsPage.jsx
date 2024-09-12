@@ -4,13 +4,13 @@ import useFetchProducts from '../../hooks/useFetchProducts';
 import ProductCard from '../../components/user/card/ProductCard';
 import { useProductStore } from '../../store/useProductStore';
 import FilterSidebar from '../../components/user/filter/FilterSidebar';
-import useAddToCart from '../../hooks/useAddToCart';
+import useCart from '../../hooks/useCart';
 
 
 const ProductsPage = () => {
     const { filteredProducts, isLoading, error } = useProductStore();
     useFetchProducts(); // Fetch products when component mounts
-    const { addToCart } = useAddToCart();
+    const { addToCart } = useCart();
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;

@@ -177,13 +177,8 @@ export const restoreProduct = async (req, res) => {
 
 
 export const getProductByIdInCart = async (req, res) => {
-    console.log("hitting product service");
     try {
         const productIds = req.body.productIds;
-        console.log("productIds:", productIds);
-
-
-
         // Find products by these IDs
         const products = await Product.find({
             _id: { $in: productIds }

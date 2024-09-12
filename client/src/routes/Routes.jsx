@@ -18,6 +18,7 @@ import ForgotPassword from '../components/common/auth/ForgotPassword';
 import ResetPassword from '../components/common/auth/ResetPassword';
 import ProductsPage from '../pages/user/ProductsPage';
 import UserProfile from '../components/user/profile/UserProfile';
+import ShoppingCart from '../components/user/cart/ShoppingCart';
 
 
 
@@ -101,6 +102,10 @@ export const routes = [
                 path: 'profile',
                 element: <UserProfile />
 
+            },
+            {
+                path: 'cart',
+                element: <ShoppingCart />
             },
 
 

@@ -1,5 +1,6 @@
 import Cart from '../models/cart.model.js';
 import axios from 'axios';
+import _ from 'lodash';
 
 
 
@@ -37,25 +38,30 @@ export const addCart = async (req, res) => {
 }
 
 // get cart by user id
-
 export const getCartByUser = async (req, res) => {
-    // Use a fixed userId for testing
     const { userId } = req.user;
     try {
         const cart = await Cart.findOne({ user: userId });
         if (!cart) {
             return res.status(404).json({ message: 'Cart not found' });
         }
-        const allProductsId = cart.cartItems.map(item => item.product);
-        console.log("Product IDs:", allProductsId);
+
+        const cartItemsMap = _.keyBy(cart.cartItems, item => item.product.toString());
+        const allProductsId = _.keys(cartItemsMap);
 
         // Call product-service with a POST request and product IDs array
         const productApi = await axios.post(`${process.env.PRODUCT_SERVICE_URL}/api/v1/products/inCart`, {
             productIds: allProductsId,
         });
-        console.log('Response from product service:', productApi.data);
-        const cartProducts = productApi.data.products;
-        return res.status(200).json(cartProducts);
+        const cartProducts = _.map(productApi.data.products, product => ({
+            ...product,
+            quantity: _.get(cartItemsMap, [product._id.toString(), 'quantity'], 0)
+        }));
+
+        return res.status(200).json({
+            message: 'Cart items fetched successfully',
+            cartItems: cartProducts
+        });
     } catch (err) {
         console.error("Error in getting cart:", err.message);
         return res.status(500).json({ message: 'Error getting cart', error: err.message });
@@ -65,9 +71,7 @@ export const getCartByUser = async (req, res) => {
 
 export const updateCart = async (req, res) => {
     const { userId } = req.user;
-    console.log(userId, 'userId');
     const { productId, status } = req.query;
-    console.log(req.params, 'params');
     try {
         const cart = await Cart.findOne({ user: userId });
         if (!cart) {

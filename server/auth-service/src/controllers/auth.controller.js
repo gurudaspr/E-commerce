@@ -1,6 +1,6 @@
 import { generateEmailToken } from '../utils/generateEmailToken.js';
 import User from '../models/user.model.js';
-import sendVerificationEmail from '../utils/sendEmail.js';
+import {sendPasswordResetEmail, sendVerificationEmail} from '../utils/sendEmail.js';
 import argon2 from 'argon2';
 import { generateJwt } from '../utils/generateJwt.js';
 import 'dotenv/config';
@@ -29,7 +29,7 @@ export const register = async (req, res) => {
 
         const subject = 'Verify your email';
         const text = `Please click the link below to verify your email address.`;
-        await sendVerificationEmail(email, verificationUrl, subject, text);
+        await sendVerificationEmail(email, verificationUrl);
 
         res.status(200).send({ message: 'Registration successful, please check your email to verify your account' });
 
@@ -145,7 +145,7 @@ export const forgotPassword = async (req, res) => {
         const verificationUrl = `${process.env.RESET_PASSWORD_LINK}/${verificationToken}`
         const subject = 'Reset your password';
         const text = `Please click the link below to reset your password.`;
-        await sendVerificationEmail(email, verificationUrl, subject, text);
+        await sendPasswordResetEmail(email, verificationUrl);
         res.status(200).send({message: 'Password reset email sent successfully'});
     }
     catch (error) {
@@ -182,7 +182,7 @@ export const resetPassword = async (req, res) => {
         const user = await User.findOne({ verificationToken: token });
 
         if (!user) {
-            return res.status(400).json({ message: 'Error resetting password' });
+            return res.status(400).json({ message: 'The password reset link is invalid or has expired' });
         }
         if (!user.isVerified) {
             return res.status(400).json({ message: 'Please verify your email first' });
@@ -190,9 +190,17 @@ export const resetPassword = async (req, res) => {
         if (newPassword !== confirmNewPassword) {
             return res.status(400).json({ message: 'Passwords do not match' });
         }
+
+        // Compare new password with the current hashed password
+        const isSamePassword = await argon2.verify(user.password, newPassword);
+        if (isSamePassword) {
+            return res.status(400).json({ message: 'New password cannot be the same as the current password' });
+        }
+
+        // Hash the new password
         const hashedPassword = await argon2.hash(newPassword);
         user.password = hashedPassword;
-        user.verificationToken = undefined;
+        user.verificationToken = undefined; // Clear the verification token
         await user.save();
 
         res.status(200).json({ message: 'Password reset successful' });

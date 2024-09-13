@@ -26,7 +26,8 @@ const useSignIn = () => {
             setSuccess(true);
             toast.success(response.data.message);
         } catch (error) {
-            toast.error(`Login failed: ${error.message}`);
+            console.log(error);
+            toast.error(error.response.data.message);
         } finally {
             setIsLoading(false);
         }

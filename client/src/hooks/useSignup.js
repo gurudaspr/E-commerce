@@ -16,7 +16,7 @@ const useSignup = () => {
             toast.success(response.data.message);
         } catch (error) {
             setError(error.message);
-            toast.error(`Signup failed: ${error.message}`);
+            toast.error(error.response.data.message);
         } finally {
             setIsLoading(false);
         }

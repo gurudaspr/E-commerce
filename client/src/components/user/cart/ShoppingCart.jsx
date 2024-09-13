@@ -35,8 +35,9 @@ const ShoppingCart = () => {
     };
 
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = 40;
-    const total = subtotal
+    const baseShipping = 50;
+    const shipping = subtotal > 1000 ? 0 : baseShipping;
+    const total = subtotal + shipping;
 
     if (isInitialLoading) {
         return <Typography>Loading cart items...</Typography>;
@@ -44,9 +45,8 @@ const ShoppingCart = () => {
 
     return (
         <div className="container mx-auto px-4 py-16">
-            <Typography variant="h2" className="mb-4">Shopping Cart</Typography>
             <div className="flex flex-col lg:flex-row gap-8">
-                <Card className="w-full lg:w-2/3">
+                <Card className="w-full lg:w-2/3 border border-gray-300 shadow-none">
                     <CardHeader floated={false} shadow={false} className="rounded-none">
                         <Typography variant="h4">Cart Items</Typography>
                     </CardHeader>
@@ -65,31 +65,30 @@ const ShoppingCart = () => {
                                     </Typography>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                <Tooltip content="Decrease Quantity">
-                                    <Button
-                                        size="sm"
-                                        variant="outlined"
-                                        color="blue-gray"
-                                        className="rounded-full p-2"
-
-                                        onClick={() => handleQuantityChange(item._id, -1)}
-                                        disabled={isUpdating || item.quantity <= 1}
-                                    >
-                                        <MinusIcon className="h-4 w-4" />
-                                    </Button>
+                                    <Tooltip content="Decrease Quantity">
+                                        <Button
+                                            size="sm"
+                                            variant="outlined"
+                                            color="blue-gray"
+                                            className="rounded-full p-2"
+                                            onClick={() => handleQuantityChange(item._id, -1)}
+                                            disabled={isUpdating || item.quantity <= 1}
+                                        >
+                                            <MinusIcon className="h-4 w-4" />
+                                        </Button>
                                     </Tooltip>
                                     <Typography>{item.quantity}</Typography>
                                     <Tooltip content="Increase Quantity">
-                                    <Button
-                                        size="sm"
-                                        variant="outlined"
-                                        color="blue-gray"
-                                        className="rounded-full p-2"
-                                        onClick={() => handleQuantityChange(item._id, 1)}
-                                        disabled={isUpdating}
-                                    >
-                                        <PlusIcon className="h-4 w-4" />
-                                    </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="outlined"
+                                            color="blue-gray"
+                                            className="rounded-full p-2"
+                                            onClick={() => handleQuantityChange(item._id, 1)}
+                                            disabled={isUpdating}
+                                        >
+                                            <PlusIcon className="h-4 w-4" />
+                                        </Button>
                                     </Tooltip>
                                 </div>
                                 <Tooltip content="Remove">
@@ -108,7 +107,7 @@ const ShoppingCart = () => {
                         ))}
                     </CardBody>
                 </Card>
-                <Card className="w-full lg:w-1/3">
+                <Card className="w-full lg:w-1/3 lg:sticky lg:top-32 lg:self-start border border-gray-300 shadow-none">
                     <CardHeader floated={false} shadow={false} className="rounded-none">
                         <Typography variant="h4">Summary</Typography>
                     </CardHeader>
@@ -121,12 +120,18 @@ const ShoppingCart = () => {
                             <div className="flex justify-between items-center">
                                 <Typography>Shipping</Typography>
                                 <div className="flex items-center gap-2">
-                                    <Typography className="line-through text-gray-500">
-                                        ₹{shipping.toFixed(2)}
+                                    {shipping === 0 ? (
+                                        <>
+                                        <Typography className="line-through text-gray-500">
+                                        ₹{baseShipping.toFixed(2)}
                                     </Typography>
-                                    <Typography className="text-green-500 font-mono text-sm">
-                                        FREE
-                                    </Typography>
+                                        <Typography className="text-green-500 font-mono text-sm">
+                                            FREE
+                                        </Typography>
+                                        </>
+                                    ) : (
+                                        <Typography>₹{shipping.toFixed(2)}</Typography>
+                                    )}
                                 </div>
                             </div>
                             <div className="flex justify-between font-bold">

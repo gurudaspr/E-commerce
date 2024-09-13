@@ -10,6 +10,7 @@ import {
 } from "@material-tailwind/react";
 import { TrashIcon, PlusIcon, MinusIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import useCart from '../../../hooks/useCart'
+import { Link } from 'react-router-dom';
 
 const ShoppingCart = () => {
     const {
@@ -122,12 +123,12 @@ const ShoppingCart = () => {
                                 <div className="flex items-center gap-2">
                                     {shipping === 0 ? (
                                         <>
-                                        <Typography className="line-through text-gray-500">
-                                        ₹{baseShipping.toFixed(2)}
-                                    </Typography>
-                                        <Typography className="text-green-500 font-mono text-sm">
-                                            FREE
-                                        </Typography>
+                                            <Typography className="line-through text-gray-500">
+                                                ₹{baseShipping.toFixed(2)}
+                                            </Typography>
+                                            <Typography className="text-green-500 font-mono text-sm">
+                                                FREE
+                                            </Typography>
                                         </>
                                     ) : (
                                         <Typography>₹{shipping.toFixed(2)}</Typography>
@@ -139,9 +140,11 @@ const ShoppingCart = () => {
                                 <Typography>₹{total.toFixed(2)}</Typography>
                             </div>
                         </div>
-                        <Button fullWidth size="lg" className="mt-4" disabled={isUpdating}>
-                            Checkout
-                        </Button>
+                        <Link to="/user/checkout">
+                            <Button fullWidth size="lg" className="mt-4" disabled={isUpdating}>
+                                Checkout
+                            </Button>
+                        </Link>
                     </CardBody>
                 </Card>
             </div>

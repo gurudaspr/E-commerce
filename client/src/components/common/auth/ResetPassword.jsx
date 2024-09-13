@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
     Card,
     Input,
@@ -13,6 +13,7 @@ import * as Yup from "yup";
 import { useNavigate, useParams } from "react-router-dom";
 import axiosInstance from "../../../config/axios";
 import toast from "react-hot-toast";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 
 // Validation schema using Yup
 const ResetPasswordSchema = Yup.object().shape({
@@ -31,6 +32,12 @@ function ResetPassword() {
     });
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    const [newPasswordShown, setNewPasswordShown] = useState(false);
+    const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
+
+    const toggleNewPasswordVisibility = () => setNewPasswordShown(prev => !prev);
+    const toggleConfirmPasswordVisibility = () => setConfirmPasswordShown(prev => !prev);
 
     const onSubmit = async (data) => {
         console.log(data, 'data');
@@ -73,10 +80,19 @@ function ResetPassword() {
                                     size="lg"
                                     variant="outlined"
                                     label="New Password"
-                                    type="password"
+                                    type={newPasswordShown ? "text" : "password"}
                                     placeholder="Enter new password"
                                     className="w-full"
                                     {...register("newPassword")}
+                                    icon={
+                                        <i onClick={toggleNewPasswordVisibility}>
+                                            {newPasswordShown ? (
+                                                <EyeIcon className="h-5 w-5 cursor-pointer" />
+                                            ) : (
+                                                <EyeSlashIcon className="h-5 w-5 cursor-pointer" />
+                                            )}
+                                        </i>
+                                    }
                                 />
                                 {errors.newPassword && (
                                     <span className="absolute text-red-300 text-xs left-2">
@@ -91,10 +107,19 @@ function ResetPassword() {
                                     size="lg"
                                     variant="outlined"
                                     label="Confirm New Password"
-                                    type="password"
+                                    type={confirmPasswordShown ? "text" : "password"}
                                     placeholder="Re-enter new password"
                                     className="w-full"
                                     {...register("confirmNewPassword")}
+                                    icon={
+                                        <i onClick={toggleConfirmPasswordVisibility}>
+                                            {confirmPasswordShown ? (
+                                                <EyeIcon className="h-5 w-5 cursor-pointer" />
+                                            ) : (
+                                                <EyeSlashIcon className="h-5 w-5 cursor-pointer" />
+                                            )}
+                                        </i>
+                                    }
                                 />
                                 {errors.confirmNewPassword && (
                                     <span className="absolute text-red-300 text-xs left-2">

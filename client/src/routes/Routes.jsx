@@ -19,6 +19,7 @@ import ResetPassword from '../components/common/auth/ResetPassword';
 import ProductsPage from '../pages/user/ProductsPage';
 import UserProfile from '../components/user/profile/UserProfile';
 import ShoppingCart from '../components/user/cart/ShoppingCart';
+import CheckoutForm from '../components/user/checkout/CheckOutForm';
 
 
 
@@ -106,6 +107,11 @@ export const routes = [
             {
                 path: 'cart',
                 element: <ShoppingCart />
+            },
+            { 
+                path: 'checkout',
+                element: <CheckoutForm />
+
             },
 
 

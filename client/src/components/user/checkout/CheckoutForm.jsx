@@ -1,104 +1,238 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import axiosInstance from '../../../config/axios';
 import {
   Card,
   Input,
-  Checkbox,
   Button,
   Typography,
   Radio,
+  Select,
+  Option,
 } from "@material-tailwind/react";
+import { PlusIcon } from '@heroicons/react/24/solid';
 
-const savedAddresses = [
-  { id: 1, address: '123 Main St', city: 'Anytown', postalCode: '12345', country: 'USA' },
-  { id: 2, address: '456 Elm St', city: 'Othertown', postalCode: '67890', country: 'USA' },
+// Validation schema
+const schema = yup.object().shape({
+  address: yup.string().required('Address is required'),
+  city: yup.string().required('City is required'),
+  pincode: yup.string().required('Pincode is required'),
+  state: yup.string().required('State is required'),
+});
+
+// List of Indian states
+const indianStates = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+  "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+  "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+  "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+  "Lakshadweep", "Delhi", "Puducherry"
 ];
+
 const CheckoutForm = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [newAddress, setNewAddress] = useState({ address: '', city: '', postalCode: '', country: '' });
   const [useNewAddress, setUseNewAddress] = useState(false);
+  const [savedAddresses, setSavedAddresses] = useState([]);
 
-  const handleAddressChange = (e) => {
-    setSelectedAddress(parseInt(e.target.value));
-    setUseNewAddress(false);
+  const { control, handleSubmit, formState: { errors }, setValue, reset } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      address: '',
+      city: '',
+      pincode: '',
+      state: '',
+    },
+  });
+
+  // Fetch saved addresses from the API
+  const fetchSavedAddresses = async () => {
+    try {
+      const response = await axiosInstance.get('/addresses');
+      console.log('Fetched saved addresses:', response.data);
+      setSavedAddresses(response.data.addresses);
+    } catch (error) {
+      console.error('Failed to fetch saved addresses:', error);
+    }
   };
 
-  const handleNewAddressChange = (e) => {
-    setNewAddress({ ...newAddress, [e.target.name]: e.target.value });
+  useEffect(() => {
+    fetchSavedAddresses();
+  }, []);
+
+  useEffect(() => {
+    console.log('Saved addresses:', savedAddresses);
+  }, [savedAddresses]);
+
+  const handleAddressChange = (addressId) => {
+    setSelectedAddress(addressId);
+    setUseNewAddress(false);
+
+    if (addressId) {
+      const selectedAddr = savedAddresses.find(addr => addr.id === addressId);
+      setValue('address', selectedAddr.address);
+      setValue('city', selectedAddr.city);
+      setValue('pincode', selectedAddr.pincode);
+      setValue('state', selectedAddr.state);
+    } else {
+      reset({
+        address: '',
+        city: '',
+        pincode: '',
+        state: '',
+      });
+    }
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axiosInstance.post('/addresses', data);
+      console.log('Address saved:', response.data);
+      setSavedAddresses(prevAddresses => [...prevAddresses, response.data]);
+      setUseNewAddress(false);
+      setSelectedAddress(response.data.id);
+      // Show success message to user
+      alert('Address added successfully!');
+    } catch (error) {
+      console.error('Error saving address:', error);
+      // Show error message to user
+      alert('Error saving address. Please try again.');
+    }
+  };
+
+  const handleAddNewAddress = () => {
+    setUseNewAddress(true);
+    setSelectedAddress(null);
+    reset({
+      address: '',
+      city: '',
+      pincode: '',
+      state: '',
+    });
   };
 
   return (
-    <div className="container mx-auto flex md:flex-row gap-8 p-4  md:pt-20 justify-end flex-col-reverse">
-      <div className=" md:fixed top-28 p-6 left-52 border border-gray-300  rounded-xl  ">
-      <Typography variant="h5" color="blue-gray" className="mt-8 mb-6">
-        Shipping Address
-      </Typography>
-
-      {savedAddresses.map((address) => (
-        <div key={address.id} className="mb-4 w-[100%]">
-          <Radio
-            name="address"
-            value={address.id}
-            onChange={handleAddressChange}
-            checked={selectedAddress === address.id}
-            label={
-              <Typography color="blue-gray" className="font-medium">
-                {`${address.address}, ${address.city}, ${address.postalCode}, ${address.country}`}
-              </Typography>
-            }
-          />
-        </div>
-      ))}
-
-      <div className="mb-4">
-        <Radio
-          name="address"
-          value="new"
-          onChange={() => setUseNewAddress(true)}
-          checked={useNewAddress}
-          label={
-            <Typography color="blue-gray" className="font-medium">
-              Use a new address
-            </Typography>
-          }
-        />
-      </div>
-
-      {useNewAddress && (
-        <>
-          <div className="mb-4">
-            <Input name="address" label="Address" onChange={handleNewAddressChange} value={newAddress.address} />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <Input name="city" label="City" onChange={handleNewAddressChange} value={newAddress.city} />
-            <Input name="postalCode" label="Postal Code" onChange={handleNewAddressChange} value={newAddress.postalCode} />
-            <Input name="country" label="Country" onChange={handleNewAddressChange} value={newAddress.country} />
-          </div>
-        </>
-      )}
-
-      <Checkbox
-        label={
-          <Typography color="blue-gray" className="flex font-medium">
-            I agree to the
-            <Typography
-              as="a"
-              href="#"
-              color="blue"
-              className="font-medium hover:text-blue-700 transition-colors ml-1"
-            >
-              Terms and Conditions
-            </Typography>
+    <div className="container mx-auto flex md:flex-row gap-8 p-4 md:pt-20 flex-col-reverse">
+      <div className="md:w-2/3">
+        <Card className="p-6 border border-gray-300 rounded-xl">
+          <Typography variant="h5" color="blue-gray" className="mt-8 mb-6">
+            Shipping Address
           </Typography>
-        }
-        containerProps={{ className: "-ml-2.5" }}
-      />
 
-      <Button fullWidth className="mt-6">
-        Proceed to Payment
-      </Button>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {savedAddresses.map((address) => (
+              <div key={address.id} className="mb-4">
+                <Radio
+                  name="address"
+                  value={address.id}
+                  onChange={() => handleAddressChange(address.id)}
+                  checked={selectedAddress === address.id}
+                  label={
+                    <Typography color="blue-gray" className="font-medium">
+                      {`${address.address}, ${address.city}, ${address.state}, ${address.pincode}`}
+                    </Typography>
+                  }
+                />
+              </div>
+            ))}
+
+            <div className="mb-4">
+              <div
+                onClick={handleAddNewAddress}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <PlusIcon className="h-6 w-6 text-blue-700" />
+                <Typography color="blue-gray" className="font-medium">
+                  Add a new address
+                </Typography>
+              </div>
+            </div>
+
+            {useNewAddress && (
+              <>
+                <div className="mb-4">
+                  <Controller
+                    name="address"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Address"
+                        error={!!errors.address}
+                      />
+                    )}
+                  />
+                  {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address.message}</p>}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 mb-4">
+                  <Controller
+                    name="city"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="City"
+                        error={!!errors.city}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="pincode"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        label="Pincode"
+                        error={!!errors.pincode}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="state"
+                    control={control}
+                    render={({ field }) => (
+                      <Select {...field} label="State" error={!!errors.state}>
+                        {indianStates.map((state) => (
+                          <Option key={state} value={state}>{state}</Option>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                  <Button type="submit" size="sm" color="blue">
+                    Save Address
+                  </Button>
+                </div>
+              </>
+            )}
+          </form>
+
+          <Button 
+            type="button" 
+            fullWidth 
+            className="mt-6" 
+            onClick={handleSubmit((data) => {
+              if (selectedAddress) {
+                // Proceed to payment with selected address
+                console.log('Proceeding to payment with address:', data);
+                // Add your logic here to proceed to payment
+              } else if (useNewAddress) {
+                // Submit the new address form
+                onSubmit(data);
+              } else {
+                // No address selected or added
+                alert('Please select an address or add a new one before proceeding.');
+              }
+            })}
+          >
+            Proceed to Payment
+          </Button>
+        </Card>
       </div>
 
-      <Card className=" p-6 bg-gray-900 text-white w-full md:w-1/2 ">
+      <Card className="p-6 bg-gray-900 text-white w-full md:w-1/2">
         <Typography variant="h5" className="mb-6">
           Order Summary
         </Typography>
@@ -119,23 +253,6 @@ const CheckoutForm = () => {
             </div>
             <Typography variant="h6" className="ml-auto">$790</Typography>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-white rounded"></div>
-            <div>
-              <Typography variant="h6">Premium Suit</Typography>
-              <Typography variant="small" color="gray">Linen, Size: M</Typography>
-            </div>
-            <Typography variant="h6" className="ml-auto">$790</Typography>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-white rounded"></div>
-            <div>
-              <Typography variant="h6">Premium Suit</Typography>
-              <Typography variant="small" color="gray">Linen, Size: M</Typography>
-            </div>
-            <Typography variant="h6" className="ml-auto">$790</Typography>
-          </div>
-          
         </div>
         <hr className="my-6 border-gray-700" />
         <div className="space-y-2">
@@ -146,10 +263,6 @@ const CheckoutForm = () => {
           <div className="flex justify-between">
             <Typography>Shipping Fee</Typography>
             <Typography>$10</Typography>
-          </div>
-          <div className="flex justify-between">
-            <Typography>Tax Estimate</Typography>
-            <Typography>$0</Typography>
           </div>
           <div className="flex justify-between font-bold">
             <Typography>Order Total</Typography>

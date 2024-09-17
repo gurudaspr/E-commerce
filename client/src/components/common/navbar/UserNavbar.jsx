@@ -125,7 +125,7 @@ const NavbarUser = () => {
                 </IconButton>
             </div>
             <Collapse open={open}>
-                <div className="mt-2 rounded-xl bg-white py-2 px-4">
+                <div className="mt-2 rounded-xl bg-transparent py-2 px-4">
                     <ul className="flex flex-col gap-4">
                         <NavItem label="Profile" path="/user/profile" />
                        <hr className=" bg-black "  />

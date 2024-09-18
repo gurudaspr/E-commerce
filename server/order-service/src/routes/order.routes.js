@@ -1,11 +1,12 @@
 import express from 'express';
-import { createOrder } from '../controllers/order.controller.js';
+import { createOrder, verifyPayment } from '../controllers/order.controller.js';
 
 
 
 const router = express.Router();
 
-router.post('/', createOrder)
+router.post('/create-order', createOrder);
+router.post('/verify-payment', verifyPayment);
 
 
 

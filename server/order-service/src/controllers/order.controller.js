@@ -1,65 +1,46 @@
-import Order from "../models/order.model.js";
-import getCouponByCode from "../services/getCouponByCode.js";
+import razorpayInstance from "../config/razorpay.js";
 
 
 
 
 export const createOrder = async (req, res) => {
+    console.log("hitting createOrder");
+
     try {
-        const { couponCode, items, user, address, payment } = req.body;
-    
-        // Calculate itemsTotal
-        const itemsTotal = items.reduce((total, item) => total + (item.price * item.quantity), 0);
-    
-        // Initialize coupon
-        let coupon = null;
-        let applyDiscount = false;
-    
-        if (couponCode) {
-            try {
-                // Call Coupon Service to get coupon details
-                const couponData = await getCouponByCode(couponCode);
-    
-                if (couponData) {
-                    if (couponData.minimumOrderAmount <= itemsTotal) {
-                        // Valid coupon that meets the minimum order amount
-                        coupon = couponData;
-                        applyDiscount = true;
-                    }
-                    // No action is taken for minimum order amount issues; the discount is not applied
-                } else {
-                    // Invalid or expired coupon; discount will not be applied
-                }
-            } catch (error) {
-                console.error('Error retrieving coupon details:', error.message);
-                // Proceed with order creation even if there's an error retrieving coupon details
-            }
-        }
-    
-        // Calculate totalPrice
-        let totalPrice = itemsTotal;
-        if (applyDiscount && coupon) {
-            if (coupon.discountType === 'percentage') {
-                totalPrice = itemsTotal * (1 - coupon.discountValue / 100);
-            } else if (coupon.discountType === 'fixed') {
-                totalPrice = Math.max(itemsTotal - coupon.discountValue, 0);
-            }
-        }
-    
-        // Create and save order
-        const order = new Order({
-            user,
-            items,
-            totalPrice,
-            address,
-            payment,
-            coupon: coupon ? coupon._id : null
-        });
-    
-        await order.save();
-        res.status(201).send(order);
+        const { amount } = req.body;
+        const options = {
+            amount: amount * 100, // Razorpay expects amount in paisa
+            currency: 'INR',
+            receipt: 'receipt_' + Math.random().toString(36).substring(7),
+        };
+
+        const order = await razorpayInstance.orders.create(options);
+        res.json(order);
     } catch (error) {
-        console.error('Error creating order:', error.message);
-        res.status(500).send('Error creating order');
+        res.status(500).json({ error: error.message });
     }
+}
+
+export const verifyPayment = async (req, res) => {
+    try {
+        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+        const body = razorpay_order_id + '|' + razorpay_payment_id;
+        const expectedSignature = crypto
+            .createHmac('sha256', process.env.RAZORPAY_SECRET)
+            .update(body.toString())
+            .digest('hex');
+
+        if (expectedSignature === razorpay_signature) {
+            // Payment is successful
+            res.json({ success: true, message: 'Payment verified successfully' });
+        } else {
+            // Payment verification failed
+            res.status(400).json({ success: false, message: 'Invalid signature' });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+
 }

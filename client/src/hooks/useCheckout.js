@@ -61,7 +61,7 @@ const useCheckout = () => {
     const handleProceedToPayment = () => {
         if (selectedAddressId || useNewAddress) {
             console.log('Proceeding to payment with address ID:', selectedAddressId);
-            // Implement your payment logic here
+            
         } else {
             toast.error('Please select an address or add a new one before proceeding.');
         }

@@ -8,9 +8,10 @@ import {
     IconButton,
     Tooltip,
 } from "@material-tailwind/react";
-import { TrashIcon, PlusIcon, MinusIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import useCart from '../../../hooks/useCart'
-import { Link } from 'react-router-dom';
+import { PlusIcon, MinusIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import useCart from '../../../hooks/useCart';
+import useCheckoutStore from  '../../../store/useCheckOutStore'
+import { useNavigate } from 'react-router-dom';
 
 const ShoppingCart = () => {
     const {
@@ -21,6 +22,9 @@ const ShoppingCart = () => {
         updateCartItem,
         removeFromCart,
     } = useCart();
+
+    const setCheckoutItems = useCheckoutStore((state) => state.setCheckoutItems);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchCartItems();
@@ -33,6 +37,11 @@ const ShoppingCart = () => {
 
     const handleRemoveItem = async (itemId) => {
         await removeFromCart(itemId);
+    };
+
+    const handleCheckout = () => {
+        setCheckoutItems(cartItems);
+        navigate('/user/checkout');
     };
 
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -62,7 +71,7 @@ const ShoppingCart = () => {
                                 <div className="flex-grow">
                                     <Typography variant="h6">{item.name}</Typography>
                                     <Typography color="blue-gray" className="font-medium">
-                                        ₹{item.price}
+                                        ₹{item.price * item.quantity}
                                     </Typography>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -140,11 +149,15 @@ const ShoppingCart = () => {
                                 <Typography>₹{total.toFixed(2)}</Typography>
                             </div>
                         </div>
-                        <Link to="/user/checkout">
-                            <Button fullWidth size="lg" className="mt-4" disabled={isUpdating}>
-                                Checkout
-                            </Button>
-                        </Link>
+                        <Button
+                            fullWidth
+                            size="lg"
+                            className="mt-4"
+                            disabled={isUpdating || cartItems.length === 0}
+                            onClick={handleCheckout}
+                        >
+                            Checkout
+                        </Button>
                     </CardBody>
                 </Card>
             </div>

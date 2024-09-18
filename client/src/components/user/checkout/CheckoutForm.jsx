@@ -1,63 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import axiosInstance from '../../../config/axios';
+import React from 'react';
+import useCheckout from '../../../hooks/useCheckout';
+import useCheckoutStore from '../../../store/useCheckOutStore' 
 import {
   Card, Input, Button, Typography, Radio, Select, Option,
 } from "@material-tailwind/react";
 import { PlusIcon } from '@heroicons/react/24/solid';
-import toast from 'react-hot-toast';
-
-const schema = yup.object({
-  address: yup.string().required('Address is required'),
-  city: yup.string().required('City is required'),
-  pincode: yup.string().required('Pincode is required'),
-  state: yup.string().required('State is required'),
-});
+import { Controller } from 'react-hook-form';
 
 const indianStates = ["Andhra Pradesh", "Assam", "Bihar", "Goa", "Gujarat", "Karnataka", "Kerala", "Maharashtra", "Punjab", "Tamil Nadu", "Uttar Pradesh", "West Bengal", "Delhi"];
 
 const CheckoutForm = () => {
-  const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const [useNewAddress, setUseNewAddress] = useState(false);
-  const [savedAddresses, setSavedAddresses] = useState([]);
+  const {
+    addresses,
+    loading,
+    error,
+    selectedAddressId,
+    setSelectedAddressId,
+    useNewAddress,
+    setUseNewAddress,
+    saveAddress,
+    handleProceedToPayment,
+    control,
+    handleSubmit,
+    errors,
+  } = useCheckout();
 
-  const { control, handleSubmit, formState: { errors }, reset } = useForm({
-    resolver: yupResolver(schema),
-  });
+  const checkoutItems = useCheckoutStore((state) => state.checkoutItems);
 
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-        const response = await axiosInstance.get('/addresses');
-        setSavedAddresses(response.data.addresses);
-      } catch (error) {
-        console.error('Failed to fetch addresses:', error);
-      }
-    };
-    fetchAddresses();
-  }, []);
-
-  const onSubmit = async (data) => {
-    try {
-      const response = await axiosInstance.post('/addresses', data);
-      setSavedAddresses([...savedAddresses, response.data]);
-      setUseNewAddress(false);
-      toast.success('Address saved successfully');
-    } catch (error) {
-      console.error('Error saving address:', error);
-      alert('Error saving address. Please try again.');
-    }
+  const onSubmit = (data) => {
+    saveAddress(data);
   };
 
-  const handleProceedToPayment = () => {
-    if (selectedAddressId || useNewAddress) {
-      console.log('Proceeding to payment with address ID:', selectedAddressId);
-    } else {
-      toast.error('Please select an address or add a new one before proceeding.');
-    }
-  };
+  if (loading) return <Typography>Loading...</Typography>;
+  if (error) return <Typography color="red">{error}</Typography>;
+
+  const subtotal = checkoutItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const baseShipping = 50;
+  const shipping = subtotal > 1000 ? 0 : baseShipping;
+  const total = subtotal + shipping;
+
 
   return (
     <div className="container mx-auto flex flex-col-reverse md:flex-row gap-8 p-4 md:pt-20">
@@ -67,8 +48,8 @@ const CheckoutForm = () => {
             Shipping Address
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
-            {savedAddresses.length > 0 ? (
-              savedAddresses.map((address) => (
+            {addresses.length > 0 ? (
+              addresses.map((address) => (
                 <div key={address._id} className="mb-4">
                   <Radio
                     name="address"
@@ -135,14 +116,24 @@ const CheckoutForm = () => {
         </Typography>
 
         <div className="space-y-4">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-white rounded"></div>
-            <div>
-              <Typography variant="h6">Pink Blouse</Typography>
-              <Typography variant="small" color="gray">Silk, Size: XS</Typography>
+          {checkoutItems.map((item) => (
+            <div key={item._id} className="flex items-center gap-4">
+              <img
+                src={item.image}
+                alt={item.name}
+                className="w-16 h-16 rounded object-cover"
+              />
+              <div>
+                <Typography variant="h6">{item.name}</Typography>
+                <Typography variant="small" color="gray">
+                  Quantity: {item.quantity}
+                </Typography>
+              </div>
+              <Typography variant="h6" className="ml-auto">
+                ₹{(item.price * item.quantity).toFixed(2)}
+              </Typography>
             </div>
-            <Typography variant="h6" className="ml-auto">$1,300</Typography>
-          </div>
+          ))}
         </div>
 
         <hr className="my-6 border-gray-700" />
@@ -150,12 +141,18 @@ const CheckoutForm = () => {
         <div className="space-y-2">
           <div className="flex justify-between">
             <Typography>Subtotal</Typography>
-            <Typography>$2,090</Typography>
+            <Typography>₹{subtotal.toFixed(2)}</Typography>
           </div>
 
           <div className="flex justify-between">
             <Typography>Shipping Fee</Typography>
-            <Typography>$10</Typography>
+            <Typography>
+              {shipping === 0 ? (
+                <span className="text-green-500">FREE</span>
+              ) : (
+                `₹${shipping.toFixed(2)}`
+              )}
+            </Typography>
           </div>
 
           {/* Coupon Input */}
@@ -174,9 +171,13 @@ const CheckoutForm = () => {
           {/* Order Total */}
           <div className="flex justify-between font-bold mt-6">
             <Typography>Order Total</Typography>
-            <Typography>$2,100</Typography>
+            <Typography>₹{total.toFixed(2)}</Typography>
           </div>
         </div>
+
+        <Button fullWidth className="mt-6" onClick={handleProceedToPayment}>
+          Proceed to Payment
+        </Button>
       </Card>
     </div>
   );

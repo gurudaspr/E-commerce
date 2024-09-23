@@ -4,7 +4,7 @@ import useCheckoutStore from '../../../store/useCheckOutStore';
 import {
   Card, Input, Button, Typography, Radio, Select, Option,
 } from "@material-tailwind/react";
-import { PlusIcon, TicketIcon } from '@heroicons/react/24/solid';
+import { ArrowUturnLeftIcon, PlusIcon, ShieldCheckIcon, TicketIcon, TruckIcon } from '@heroicons/react/24/solid';
 import axiosInstance from '../../../config/axios';
 import toast from 'react-hot-toast';
 import 'https://checkout.razorpay.com/v1/checkout.js';
@@ -114,7 +114,7 @@ const CheckoutForm = () => {
 
             if (paymentVerification.data.success) {
               toast.success('Payment successful!');
-              // Handle successful payment (e.g., clear cart, show confirmation)
+
             } else {
               toast.error('Payment verification failed. Please contact support.');
             }
@@ -205,9 +205,44 @@ const CheckoutForm = () => {
             )}
           </form>
         </Card>
+        <Card className="mt-8 p-6 border border-gray-300 rounded-xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <TruckIcon className="h-12 w-12 text-blue-500 mb-2 mx-auto" />
+              <Typography variant="small" color="gray-700">
+                Free shipping on orders over ₹1,000
+              </Typography>
+            </div>
+            <div className="text-center">
+              <ArrowUturnLeftIcon className="h-12 w-12 text-yellow-500 mb-2 mx-auto" />
+              <Typography variant="small" color="gray-700">
+                30-day hassle-free returns
+              </Typography>
+            </div>
+            <div className="text-center">
+              <ShieldCheckIcon className="h-12 w-12 text-green-500 mb-2 mx-auto" />
+              <Typography variant="small" color="gray-700">
+                Secure checkout process
+              </Typography>
+            </div>
+          </div>
+
+          <div className="my-6 text-center">
+            <Typography variant="h5" color="blue" className="italic">
+              "Almost there! Complete your zesty purchase"
+            </Typography>
+          </div>
+
+          <div className="text-sm text-gray-600">
+            Need help? Contact us at{' '}
+            <strong className="text-gray-800">support@zestamart.com</strong> or call{' '}
+            <strong className="text-gray-800">1800-123-4567</strong>
+          </div>
+        </Card>
       </div>
+      
 
-
+      /
       <Card className="p-6 bg-gray-900 text-white w-full md:w-1/2">
         <Typography variant="h5" className="mb-6">
           Order Summary
@@ -301,7 +336,7 @@ const CheckoutForm = () => {
           <Typography>₹{total.toFixed(2)}</Typography>
         </div>
 
-        <Button color='white' fullWidth className="mt-6" onClick={handleProceedToPayment}>
+        <Button color='white' fullWidth className="mt-6 " onClick={handleProceedToPayment}>
           Proceed to Payment
         </Button>
       </Card>

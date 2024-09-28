@@ -20,6 +20,7 @@ import ProductsPage from '../pages/user/ProductsPage';
 import UserProfile from '../components/user/profile/UserProfile';
 import ShoppingCart from '../components/user/cart/ShoppingCart';
 import CheckoutForm from '../components/user/checkout/CheckOutForm';
+import ProductDetailPage from '../pages/user/ProductDetailPage';
 
 
 
@@ -39,7 +40,7 @@ export const routes = [
             },
             {
                 path: 'product/:id',
-                element: <h1>Product Page without Auth</h1>
+                element: <ProductDetailPage />
             },
             {
                 path: 'login',
@@ -105,7 +106,7 @@ export const routes = [
             },
             {
                 path: 'product/:id',
-                element: <h1>Product Page with Auth</h1>
+                element: <ProductDetailPage />
             },
             {
                 path: 'profile',

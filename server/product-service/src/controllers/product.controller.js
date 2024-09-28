@@ -29,6 +29,7 @@ export const getProductById = async (req, res) => {
         try {
             const inventoryResponse = await axios.get(`${process.env.INVENTORY_SERVICE_URL}/api/v1/inventory/${id}`);
             inventoryDetails = inventoryResponse.data;
+            console.log(inventoryDetails);
         } catch (inventoryError) {
             console.error('Error fetching inventory details', inventoryError);
             inventoryDetails = { error: 'Unable to fetch inventory details' };

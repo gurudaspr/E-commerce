@@ -38,10 +38,10 @@ export const getInventoryByProduct = async (req, res) => {
     const { productId } = req.params;
     try {
         const inventory = await Inventory.findOne({ product: productId });
-        if (!inventory) {
-            return res.status(404).json({ message: 'Inventory not found' });
-        }
-        res.status(200).json(inventory);
+        // if (!inventory) {
+        //     return res.status(404).json({ message: 'Inventory not found' });
+        // }
+        res.status(200).json({inventory: inventory});
     }
     catch (err) {
         console.log(" error in getting inventory",err);

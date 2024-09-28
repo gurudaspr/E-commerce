@@ -10,7 +10,7 @@ const router = express.Router();
 // Product routes
 router.get('/', getProducts);
 router.get('/random', getRandomProducts);
-router.get('/:id', verifyJwtToken, getProductById);
+router.get('/:id',  getProductById);
 router.post('/', verifyJwtToken, verifyRole('admin'), upload.single('image'), addProduct);
 router.patch('/:id', verifyJwtToken, verifyRole('admin'), upload.single('image'), updateProduct);
 router.delete('/:id', verifyJwtToken, verifyRole('admin'), deleteProduct);

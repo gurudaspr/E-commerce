@@ -61,6 +61,11 @@ export default defineConfig({
         target: 'http://localhost:5006',  // Replace with the appropriate service URL
         changeOrigin: true,
       },
+       // Proxy for reviews
+       '/api/v1/reviews': {
+        target: 'http://localhost:5007',  // Replace with the appropriate service URL
+        changeOrigin: true,
+      },
     },
   },
 });

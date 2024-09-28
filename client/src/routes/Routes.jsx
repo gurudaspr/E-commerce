@@ -38,6 +38,10 @@ export const routes = [
                 element: <ProductsPage />
             },
             {
+                path: 'product/:id',
+                element: <h1>Product Page without Auth</h1>
+            },
+            {
                 path: 'login',
                 element: <SignInPage />
             },
@@ -100,6 +104,10 @@ export const routes = [
                 element: <ProductsPage />
             },
             {
+                path: 'product/:id',
+                element: <h1>Product Page with Auth</h1>
+            },
+            {
                 path: 'profile',
                 element: <UserProfile />
 
@@ -111,7 +119,6 @@ export const routes = [
             { 
                 path: 'checkout',
                 element: <CheckoutForm />
-
             },
 
 

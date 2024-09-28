@@ -132,6 +132,25 @@ services:
           target: /usr/src/app
     networks:
       - microservices-network
+
+  review-service:
+    build:
+      context: ./review-service
+      dockerfile: Dockerfile
+    command: npm run watch
+    ports:
+      - "5007:5007"
+    env_file:
+      - ./review-service/.env
+    develop:
+      watch:
+        - action: rebuild
+          path: ./review-service/package.json
+        - action: sync
+          path: ./review-service
+          target: /usr/src/app
+    networks:
+      - microservices-network    
 networks:
   microservices-network:
     driver: bridge

@@ -10,6 +10,7 @@ export const useProductStore = create((set, get) => ({
     priceRange: [],
     sortBy: [],
     searchQuery: '',
+    ratingRange: [], // Add a rating filter
   },
 
   setProducts: (products) => set({ products, filteredProducts: products }),
@@ -26,6 +27,7 @@ export const useProductStore = create((set, get) => ({
       priceRange: [],
       sortBy: [],
       searchQuery: '',
+      ratingRange: [], // Clear rating range on filter clear
     }
   })),
 
@@ -39,6 +41,7 @@ export const useProductStore = create((set, get) => ({
         product.category && filters.categories.includes(product.category._id)
       );
     }
+
     // Apply price range filter
     if (filters.priceRange.length > 0) {
       filtered = filtered.filter(product => {
@@ -49,6 +52,19 @@ export const useProductStore = create((set, get) => ({
           if (range === '1001 to 2000') return price > 1000 && price <= 2000;
           if (range === '2001 to 5000') return price > 2000 && price <= 5000;
           if (range === 'Above 5000') return price > 5000;
+          return false;
+        });
+      });
+    }
+
+    // Apply rating range filter
+    if (filters.ratingRange.length > 0) {
+      filtered = filtered.filter(product => {
+        const averageRating = product.averageRating || 0; // Use the averageRating property
+        return filters.ratingRange.some(range => {
+          if (range === 'Below 3') return averageRating < 3;
+          if (range === '3 to 4') return averageRating >= 3 && averageRating < 4;
+          if (range === '4 and above') return averageRating >= 4;
           return false;
         });
       });
@@ -75,7 +91,7 @@ export const useProductStore = create((set, get) => ({
             case 'newest-first':
               return new Date(b.createdAt) - new Date(a.createdAt);
             case 'best-rating':
-              return b.rating - a.rating;
+              return (b.averageRating || 0) - (a.averageRating || 0); // Sort by average rating
             default:
               return 0;
           }

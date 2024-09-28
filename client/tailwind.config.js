@@ -17,7 +17,11 @@ module.exports = withMT({
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      screens: {
+        '3xl': '1600px', // or any width you prefer
+      },
+    },
   },
   plugins: [],
 });

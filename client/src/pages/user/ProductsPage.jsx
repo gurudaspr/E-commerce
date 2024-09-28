@@ -1,5 +1,4 @@
 
-import React from 'react';
 import useFetchProducts from '../../hooks/useFetchProducts';
 import ProductCard from '../../components/user/card/ProductCard';
 import { useProductStore } from '../../store/useProductStore';
@@ -27,14 +26,14 @@ const ProductsPage = () => {
 
 
         <div className='flex pt-24 min-h-screen '>
-            <div className=' md:w-1/6'>
+            <div className=' md:w-1/4'>
                 <FilterSidebar />
             </div>
-            <div className='w-full md:w-3/4 '>
+            <div className='w-full md:w-3/5 '>
                 <div className="flex">
                     <div className="flex-1 p-4">
                         <div className="mx-auto container flex flex-col items-center justify-center">
-                            <div className="grid grid-cols-1 gap-8 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+                        <div className="grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 3xl:grid-cols-4">
                                 {filteredProducts.map((product) => (
                                     <ProductCard
                                         key={product._id}

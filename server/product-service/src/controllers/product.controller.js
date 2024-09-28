@@ -203,3 +203,30 @@ export const getRandomProducts = async (req, res) => {
         res.status(500).json({ message: 'Error getting random products', error: error.message });
     }
 };
+
+
+
+// update product avg rating  used in review service
+
+export const updateAverageRating = async (req, res) => {
+    const { id } = req.params;
+    const { averageRating } = req.body;
+    if (!averageRating) {
+        return res.status(400).json({ message: 'Average rating is required' });
+    }
+
+    try {
+        const product = await Product.findByIdAndUpdate(
+            id,
+            { averageRating }, // Update only the average rating
+            { new: true, runValidators: true }
+        );
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        await product.save();
+        res.status(200).json({ message: 'Product average rating updated successfully', product });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating product', error });
+    }
+};

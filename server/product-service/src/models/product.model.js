@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -23,13 +22,11 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    reviews: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Review'
-        }
-    ],
-    deletedAt:{
+    averageRating: {
+        type: Number,
+        default: 0,
+    },
+    deletedAt: {
         type: Date,
         default: null
     }

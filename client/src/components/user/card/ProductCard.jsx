@@ -2,7 +2,7 @@
 import { Card, CardBody, Typography, Button } from '@material-tailwind/react';
 import { ShoppingCartIcon, StarIcon } from '@heroicons/react/24/solid';
 
-const ProductCard = ({ img, name, price, averageRating = 0, handleAddToCart, handleBuyNow, productId, handleNavigateToProductDetail }) => {
+const ProductCard = ({ img, name, price, averageRating , handleAddToCart, handleBuyNow, productId, handleNavigateToProductDetail }) => {
     const handleCardClick = () => {
         handleNavigateToProductDetail(productId); // Navigate to product detail page
     };

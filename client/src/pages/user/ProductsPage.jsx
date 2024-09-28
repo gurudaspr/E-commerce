@@ -50,7 +50,7 @@ const ProductsPage = () => {
                                         img={product.image}
                                         name={product.name}
                                         price={product.price}
-                                        rating={product.rating}
+                                        averageRating={product.averageRating}
                                         handleAddToCart={handleAddToCart}
                                         handleBuyNow={handleBuyNow}
                                         handleNavigateToProductDetail={handleNavigateToProductDetail}

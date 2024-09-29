@@ -109,7 +109,7 @@ export function ProductDetail({ productId }) {
       )}
 
       {/* Reviews Section */}
-      <div className="mt-16">
+      <div className="m-16">
         <Typography variant="h4" className="mb-6">
           Customer Reviews
         </Typography>

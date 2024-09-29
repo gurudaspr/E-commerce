@@ -5,6 +5,7 @@ const PRODUCT_SERVICE_URL = process.env.PRODUCT_SERVICE_URL;
 
 export const addReview = async (req, res) => {
     const { productId, userId, rating, comment } = req.body;
+    console.log(productId, userId, rating, comment);
 
     if (!productId || !userId || !rating || !comment) {
         return res.status(400).json({ message: 'Missing required fields' });

@@ -41,6 +41,7 @@ export const updateProfile = async(req, res) => {
 // get user by id
 export const getUserById = async (req, res) => {
     const { id } = req.params;
+    console.log('hitting get user by id', id);
     try {
         const user = await User.findById(id).select('name email');
         if (!user) {

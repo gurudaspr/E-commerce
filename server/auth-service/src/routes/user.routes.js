@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUserProfile, updateProfile } from '../controllers/user.controller.js';
+import { getUserById, getUserProfile, updateProfile } from '../controllers/user.controller.js';
 import {verifyJwtToken} from '../middlewares/verifyJwtToken.js';
 
 
@@ -15,7 +15,7 @@ router.patch('/profile', verifyJwtToken, updateProfile);
 
 // route to get user details by id
 
-router.get('/:id', getUserById);
+router.get('/details/:id', getUserById);
 
 
 export default router;

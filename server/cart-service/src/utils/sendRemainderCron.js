@@ -13,6 +13,11 @@ const transporter = nodemailer.createTransport({
 export default function sendCartReminderEmail(to, products) {
   const subject = "Reminder: Items Waiting in Your Cart - Zestamart";
   
+  // Calculate the total price
+  const totalPrice = products.reduce((total, product) => {
+    return total + product.price * product.quantity;
+  }, 0);
+
   // Format the product details into HTML
   const productDetails = products
     .map(
@@ -23,7 +28,7 @@ export default function sendCartReminderEmail(to, products) {
           </td>
           <td style="padding: 10px; border: 1px solid #e0e0e0;">${product.name}</td>
           <td style="padding: 10px; border: 1px solid #e0e0e0;">${product.quantity}</td>
-          <td style="padding: 10px; border: 1px solid #e0e0e0;">$${product.price}</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">₹${product.price}</td>
         </tr>`
     )
     .join('');
@@ -49,6 +54,7 @@ export default function sendCartReminderEmail(to, products) {
           ${productDetails}
         </tbody>
       </table>
+      <h3 style="text-align: right;">Total Price: ₹${totalPrice.toFixed(2)}</h3>
       <div style="text-align: center; margin: 20px 0;">
         <a href="http://localhost:5173/user/cart" style="background-color: #007bff; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold;">Review Your Cart</a>
       </div>

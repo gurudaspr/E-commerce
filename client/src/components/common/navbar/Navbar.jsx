@@ -75,7 +75,7 @@ const NavbarCommon = () => {
         </IconButton>
       </div>
       <Collapse open={open}>
-        <div className="mt-2 rounded-xl bg-white py-2">
+        <div className="mt-2 rounded-xl  py-2">
           <NavList />
           <Button className="mb-2" fullWidth onClick={() => navigate('/signup')}>
             Sign Up

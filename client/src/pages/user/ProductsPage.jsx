@@ -21,9 +21,9 @@ const ProductsPage = () => {
         addToCart(product);
     };
 
-    const handleBuyNow = (product) => {
-        console.log(product, 'buy now');
-    };
+    // const handleBuyNow = (product) => {
+    //     console.log(product, 'buy now');
+    // };
 
     const handleNavigateToProductDetail = (productId) => {
         if (isAuthenticated) {
@@ -52,7 +52,7 @@ const ProductsPage = () => {
                                         price={product.price}
                                         averageRating={product.averageRating}
                                         handleAddToCart={handleAddToCart}
-                                        handleBuyNow={handleBuyNow}
+                                        // handleBuyNow={handleBuyNow}
                                         handleNavigateToProductDetail={handleNavigateToProductDetail}
                                     />
                                 ))}

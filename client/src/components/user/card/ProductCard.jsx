@@ -2,7 +2,7 @@
 import { Card, CardBody, Typography, Button } from '@material-tailwind/react';
 import { ShoppingCartIcon, StarIcon } from '@heroicons/react/24/solid';
 
-const ProductCard = ({ img, name, price, averageRating , handleAddToCart, handleBuyNow, productId, handleNavigateToProductDetail }) => {
+const ProductCard = ({ img, name, price, averageRating, handleAddToCart, handleBuyNow, productId, handleNavigateToProductDetail }) => {
     const handleCardClick = () => {
         handleNavigateToProductDetail(productId); // Navigate to product detail page
     };
@@ -47,28 +47,19 @@ const ProductCard = ({ img, name, price, averageRating , handleAddToCart, handle
                     </div>
 
                     {/* Add to Cart and Buy Now Buttons */}
-                    <div className="flex justify-between mt-auto">
+                    <div className="flex justify-center mt-auto">
                         <Button
-                            size="sm"
-                            color="blue-gray"
-                            className="mt-2"
+                            size='sm'
+                            fullWidth
+                            variant="outlined"
+                            className="mt-2 flex items-center justify-center gap-3 text-black hover:bg-black hover:text-white transition duration-200"
                             onClick={(e) => {
                                 e.stopPropagation(); // Prevent card click from triggering
                                 handleAddToCart(productId);
                             }}
                         >
-                            <ShoppingCartIcon className="h-6 w-6" />
-                        </Button>
-                        <Button
-                            size="sm"
-                            color="light-green"
-                            className="mt-2"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleBuyNow(productId);
-                            }}
-                        >
-                            Buy Now
+                            <ShoppingCartIcon className="h-full w-full max-h-5 max-w-5 flex-shrink-0" />
+                            <span className="flex-1 text-center">Add To Cart</span>
                         </Button>
                     </div>
                 </div>

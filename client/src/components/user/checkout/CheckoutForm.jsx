@@ -16,14 +16,13 @@ const CheckoutForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
-  const [useNewAddress, setUseNewAddress] = useState(false);
   const [couponCode, setCouponCode] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState('');
 
   const checkoutItems = useCheckoutStore((state) => state.checkoutItems);
 
-  const { control, handleSubmit, formState: { errors } } = useForm();
+  const { control, handleSubmit, formState: { errors }, reset } = useForm();
 
   useEffect(() => {
     fetchAddresses();
@@ -50,9 +49,11 @@ const CheckoutForm = () => {
     try {
       setLoading(true);
       const response = await axiosInstance.post('/addresses', data);
-      setAddresses(prevAddresses => [...prevAddresses, response.data]);
-      setUseNewAddress(false);
-      toast.success('Address saved successfully');
+      const newAddress = response.data;
+      setAddresses(prevAddresses => [...prevAddresses, newAddress]);
+      setSelectedAddressId(newAddress._id);  // Select the newly added address
+      reset();  // Reset the form fields
+      toast.success('Address saved and selected successfully');
     } catch (error) {
       setError(error.message);
       toast.error('Failed to add address');
@@ -89,7 +90,7 @@ const CheckoutForm = () => {
   const total = subtotal + shipping - discount;
 
   const handleProceedToPayment = async () => {
-    if (!selectedAddressId && !useNewAddress) {
+    if (!selectedAddressId) {
       toast.error('Please select an address or add a new one before proceeding.');
       return;
     }
@@ -114,7 +115,6 @@ const CheckoutForm = () => {
 
             if (paymentVerification.data.success) {
               toast.success('Payment successful!');
-
             } else {
               toast.error('Payment verification failed. Please contact support.');
             }
@@ -152,97 +152,55 @@ const CheckoutForm = () => {
           <Typography variant="h5" color="blue-gray" className="mt-8 mb-6">
             Shipping Address
           </Typography>
-          <form onSubmit={handleSubmit(saveAddress)}>
-            {addresses.map((address) => (
-              <div key={address._id} className="mb-4">
-                <Radio
-                  name="address"
-                  value={address._id}
-                  onChange={() => setSelectedAddressId(address._id)}
-                  checked={selectedAddressId === address._id}
-                  label={`${address.address}, ${address.city}, ${address.state}, ${address.pincode}`}
-                />
-              </div>
-            ))}
-
-            <div className="mb-4 flex items-center gap-2 cursor-pointer" onClick={() => setUseNewAddress(true)}>
-              <PlusIcon className="h-6 w-6 text-blue-700" />
-              <Typography color="blue-gray" className="font-medium">
-                Add a new address
-              </Typography>
+          {addresses.map((address) => (
+            <div key={address._id} className="mb-4">
+              <Radio
+                name="address"
+                value={address._id}
+                onChange={() => setSelectedAddressId(address._id)}
+                checked={selectedAddressId === address._id}
+                label={`${address.address}, ${address.city}, ${address.state}, ${address.pincode}`}
+              />
             </div>
+          ))}
 
-            {useNewAddress && (
-              <>
-                <div className="mb-4">
-                  <Controller
-                    name="address"
-                    control={control}
-                    rules={{ required: 'Address is required' }}
-                    render={({ field }) => <Input {...field} label="Address" error={!!errors.address} />}
-                  />
-                  {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address.message}</p>}
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                  <Controller name="city" control={control} rules={{ required: 'City is required' }} render={({ field }) => <Input {...field} label="City" error={!!errors.city} />} />
-                  <Controller name="pincode" control={control} rules={{ required: 'Pincode is required' }} render={({ field }) => <Input {...field} label="Pincode" error={!!errors.pincode} />} />
-                </div>
-                <Controller
-                  name="state"
-                  control={control}
-                  rules={{ required: 'State is required' }}
-                  render={({ field }) => (
-                    <Select {...field} label="State" error={!!errors.state}>
-                      {indianStates.map(state => <Option key={state} value={state}>{state}</Option>)}
-                    </Select>
-                  )}
-                />
-                {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state.message}</p>}
-                <Button type="submit" size="sm" color="blue" className="mt-4">
-                  Save Address
-                </Button>
-              </>
-            )}
+          <Typography color="blue-gray" className="font-medium mb-4">
+            Add a new address
+          </Typography>
+
+          <form onSubmit={handleSubmit(saveAddress)}>
+            <div className="mb-4">
+              <Controller
+                name="address"
+                control={control}
+                rules={{ required: 'Address is required' }}
+                render={({ field }) => <Input {...field} label="Address" error={!!errors.address} />}
+              />
+              {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address.message}</p>}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <Controller name="city" control={control} rules={{ required: 'City is required' }} render={({ field }) => <Input {...field} label="City" error={!!errors.city} />} />
+              <Controller name="pincode" control={control} rules={{ required: 'Pincode is required' }} render={({ field }) => <Input {...field} label="Pincode" error={!!errors.pincode} />} />
+            </div>
+            <Controller
+              name="state"
+              control={control}
+              rules={{ required: 'State is required' }}
+              render={({ field }) => (
+                <Select {...field} label="State" error={!!errors.state}>
+                  {indianStates.map(state => <Option key={state} value={state}>{state}</Option>)}
+                </Select>
+              )}
+            />
+            {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state.message}</p>}
+            <Button type="submit" size="sm" color="blue" className="mt-4">
+              Save Address
+            </Button>
           </form>
         </Card>
-        <Card className="mt-8 p-6 border border-gray-300 rounded-xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <TruckIcon className="h-12 w-12 text-blue-500 mb-2 mx-auto" />
-              <Typography variant="small" color="gray-700">
-                Free shipping on orders over ₹1,000
-              </Typography>
-            </div>
-            <div className="text-center">
-              <ArrowUturnLeftIcon className="h-12 w-12 text-yellow-500 mb-2 mx-auto" />
-              <Typography variant="small" color="gray-700">
-                30-day hassle-free returns
-              </Typography>
-            </div>
-            <div className="text-center">
-              <ShieldCheckIcon className="h-12 w-12 text-green-500 mb-2 mx-auto" />
-              <Typography variant="small" color="gray-700">
-                Secure checkout process
-              </Typography>
-            </div>
-          </div>
-
-          <div className="my-6 text-center">
-            <Typography variant="h5" color="blue" className="italic">
-              "Almost there! Complete your zesty purchase"
-            </Typography>
-          </div>
-
-          <div className="text-sm text-gray-600">
-            Need help? Contact us at{' '}
-            <strong className="text-gray-800">support@zestamart.com</strong> or call{' '}
-            <strong className="text-gray-800">1800-123-4567</strong>
-          </div>
-        </Card>
       </div>
-      
 
-      /
+      {/* Order Summary */}
       <Card className="p-6 bg-gray-900 text-white w-full md:w-1/2">
         <Typography variant="h5" className="mb-6">
           Order Summary
@@ -296,7 +254,7 @@ const CheckoutForm = () => {
           )}
         </div>
 
-        {/* Enhanced Coupon Section */}
+        {/* Coupon Section */}
         <div className="my-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -336,7 +294,7 @@ const CheckoutForm = () => {
           <Typography>₹{total.toFixed(2)}</Typography>
         </div>
 
-        <Button color='white' fullWidth className="mt-6 " onClick={handleProceedToPayment}>
+        <Button color='white' fullWidth className="my-auto" onClick={handleProceedToPayment}>
           Proceed to Payment
         </Button>
       </Card>

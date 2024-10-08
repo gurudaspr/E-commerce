@@ -10,7 +10,6 @@ import {
 } from "@material-tailwind/react";
 import { PlusIcon, MinusIcon, XMarkIcon, FaceFrownIcon } from "@heroicons/react/24/solid";
 import useCart from '../../../hooks/useCart';
-import useCheckoutStore from '../../../store/useCheckOutStore';
 import { useNavigate } from 'react-router-dom';
 
 const ShoppingCart = () => {
@@ -23,8 +22,8 @@ const ShoppingCart = () => {
         removeFromCart,
     } = useCart();
 
-    const setCheckoutItems = useCheckoutStore((state) => state.setCheckoutItems);
     const navigate = useNavigate();
+    console.log(cartItems, 'cartItems from shopping cart');
 
     useEffect(() => {
         fetchCartItems();
@@ -40,7 +39,6 @@ const ShoppingCart = () => {
     };
 
     const handleCheckout = () => {
-        setCheckoutItems(cartItems);
         navigate('/user/checkout');
     };
 
@@ -74,7 +72,7 @@ const ShoppingCart = () => {
                     </div>
                 ) : (
                     <>
-                        <Card className="w-full lg:w-2/3 border border-gray-300 shadow-none  ">
+                        <Card className="w-full lg:w-2/3 border border-gray-300 shadow-none">
                             <CardHeader floated={false} shadow={false} className="rounded-none">
                                 <Typography variant="h4">Cart Items</Typography>
                             </CardHeader>

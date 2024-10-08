@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import useCheckoutStore from '../../../store/useCheckOutStore';
 import {
   Card, Input, Button, Typography, Radio, Select, Option,
 } from "@material-tailwind/react";
 import { ArrowUturnLeftIcon, PlusIcon, ShieldCheckIcon, TicketIcon, TruckIcon } from '@heroicons/react/24/solid';
 import axiosInstance from '../../../config/axios';
 import toast from 'react-hot-toast';
+import useCart from '../../../hooks/useCart';
 import 'https://checkout.razorpay.com/v1/checkout.js';
 
 const indianStates = ["Andhra Pradesh", "Assam", "Bihar", "Goa", "Gujarat", "Karnataka", "Kerala", "Maharashtra", "Punjab", "Tamil Nadu", "Uttar Pradesh", "West Bengal", "Delhi"];
@@ -20,12 +20,14 @@ const CheckoutForm = () => {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState('');
 
-  const checkoutItems = useCheckoutStore((state) => state.checkoutItems);
+  const { cartItems, fetchCartItems, isInitialLoading: isCartLoading } = useCart();
+  console.log(cartItems, 'cartItems from checkout form');
 
   const { control, handleSubmit, formState: { errors }, reset } = useForm();
 
   useEffect(() => {
     fetchAddresses();
+    fetchCartItems();
   }, []);
 
   const fetchAddresses = async () => {
@@ -51,8 +53,8 @@ const CheckoutForm = () => {
       const response = await axiosInstance.post('/addresses', data);
       const newAddress = response.data;
       setAddresses(prevAddresses => [...prevAddresses, newAddress]);
-      setSelectedAddressId(newAddress._id);  // Select the newly added address
-      reset();  // Reset the form fields
+      setSelectedAddressId(newAddress._id);
+      reset();
       toast.success('Address saved and selected successfully');
     } catch (error) {
       setError(error.message);
@@ -84,7 +86,7 @@ const CheckoutForm = () => {
     }
   };
 
-  const subtotal = checkoutItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal > 1000 ? 0 : 50;
   const discount = appliedCoupon ? (appliedCoupon.discountType === 'percentage' ? (subtotal * appliedCoupon.discountValue) / 100 : appliedCoupon.discountValue) : 0;
   const total = subtotal + shipping - discount;
@@ -96,12 +98,10 @@ const CheckoutForm = () => {
     }
 
     try {
-      // Create order
       const orderResponse = await axiosInstance.post('/orders/create-order', {
         amount: total,
       });
 
-      // Initialize Razorpay
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: orderResponse.data.amount,
@@ -207,7 +207,7 @@ const CheckoutForm = () => {
         </Typography>
 
         <div className="space-y-4">
-          {checkoutItems.map((item) => (
+          {cartItems.map((item) => (
             <div key={item._id} className="flex items-center gap-4">
               <img
                 src={item.image}

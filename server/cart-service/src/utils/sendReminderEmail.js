@@ -13,8 +13,7 @@ const transporter = nodemailer.createTransport({
 // Function to send cart reminder email
 export default function sendCartReminderEmail(to, products) {
   const subject = "Reminder: Items Waiting in Your Cart - Zestamart";
-  console.log(products,'send email');
-  // Format the product details into HTML
+  
   const productDetails = products
     .map(
       (product) => `
@@ -23,8 +22,7 @@ export default function sendCartReminderEmail(to, products) {
             <img src="${product.image}" alt="${product.name}" style="width: 100px; height: auto;">
           </td>
           <td style="padding: 10px; border: 1px solid #e0e0e0;">${product.name}</td>
-          <td style="padding: 10px; border: 1px solid #e0e0e0;">${product.quantity}</td>
-          <td style="padding: 10px; border: 1px solid #e0e0e0;">$${product.price}</td>
+          <td style="padding: 10px; border: 1px solid #e0e0e0;">₹${product.price}</td>
         </tr>`
     )
     .join('');
@@ -42,7 +40,6 @@ export default function sendCartReminderEmail(to, products) {
           <tr style="background-color: #f8f8f8;">
             <th style="padding: 10px; border: 1px solid #e0e0e0;">Product Image</th>
             <th style="padding: 10px; border: 1px solid #e0e0e0;">Product Name</th>
-            <th style="padding: 10px; border: 1px solid #e0e0e0;">Quantity</th>
             <th style="padding: 10px; border: 1px solid #e0e0e0;">Price</th>
           </tr>
         </thead>
@@ -51,7 +48,7 @@ export default function sendCartReminderEmail(to, products) {
         </tbody>
       </table>
       <div style="text-align: center; margin: 20px 0;">
-        <a href="https://zestamart.com/cart" style="background-color: #007bff; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold;">Review Your Cart</a>
+        <a href="http://localhost:5173/user/cart" style="background-color: #007bff; color: white; padding: 12px 24px; border-radius: 5px; text-decoration: none; font-weight: bold;">Review Your Cart</a>
       </div>
       <p>If you didn’t add these items, you can ignore this email.</p>
       <p>Thanks, <br> The Zestamart Team</p>

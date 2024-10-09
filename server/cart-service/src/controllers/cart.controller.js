@@ -7,51 +7,44 @@ import { scheduleReminder } from '../utils/scheduleReminder.js';
 
 // Add a new cart
 export const addCart = async (req, res) => {
-    const { userId } = req.user;  // Assuming user is authenticated
+    const { userId } = req.user; 
     const { productId } = req.params;
-
     try {
         const existingCart = await Cart.findOne({ user: userId });
-
         if (existingCart) {
-            // Check if the product is already in the cart
             const existingProduct = existingCart.cartItems.find(item => item.product.toString() === productId);
-
             if (existingProduct) {
                 existingProduct.quantity += 1;
                 await existingCart.save();
                 return res.status(201).json(existingCart);
             }
-
-            // Add new product to existing cart
+            // Add the new product
             existingCart.cartItems.push({
                 product: productId,
                 createdAt: Date.now()
             });
             await existingCart.save();
             console.log('Setting schedule reminder for existing cart');
-            scheduleReminder(existingCart);
+            scheduleReminder(userId, productId);
             return res.status(201).json(existingCart);
         }
-
-        // Create a new cart and add the product
-        const newCart = new Cart({
+        // Create a new cart and add the product to it
+        const cart = new Cart({
             user: userId,
             cartItems: [{
                 product: productId,
                 createdAt: Date.now()
             }]
         });
-
-        await newCart.save();
+        await cart.save();
         console.log('Setting schedule reminder for new cart');
-        scheduleReminder(newCart);
-        res.status(201).json({ message: 'Product added to cart successfully', cart: newCart });
+        scheduleReminder(userId, productId);
+        res.status(201).json({ message: 'Product added to cart successfully', cart });
     } catch (err) {
-        console.log("Error adding to cart", err);
-        res.status(500).json({ message: 'Error adding to cart', error: err.message });
+        console.log("Error in adding cart", err);
+        res.status(500).json({ message: 'Error adding cart', error: err.message });
     }
-};
+}
 
 // get cart by user id
 export const getCartByUser = async (req, res) => {

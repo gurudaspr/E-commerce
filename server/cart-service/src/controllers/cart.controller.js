@@ -1,6 +1,7 @@
 import Cart from '../models/cart.model.js';
 import axios from 'axios';
 import _ from 'lodash';
+import { scheduleReminder } from '../utils/scheduleReminder.js';
 
 
 
@@ -25,6 +26,8 @@ export const addCart = async (req, res) => {
                 createdAt: Date.now()
             });
             await existingCart.save();
+            console.log('setting schedule reminder existing cart');
+            scheduleReminder(userId, existingCart._id);
             return res.status(201).json(existingCart);
         }
         // Create a new cart and add the product to it
@@ -36,6 +39,8 @@ export const addCart = async (req, res) => {
             }]
         });
         await cart.save();
+        console.log('setting schedule reminder new cart');
+        scheduleReminder(userId, cart._id);
         res.status(201).json({ message: 'Product added to cart successfully', cart });
     }
     catch (err) {

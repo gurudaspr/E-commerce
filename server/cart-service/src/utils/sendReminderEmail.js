@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 // Function to send cart reminder email
 export default function sendCartReminderEmail(to, products) {
   const subject = "Reminder: Items Waiting in Your Cart - Zestamart";
-  
+  console.log(products,'send email');
   // Format the product details into HTML
   const productDetails = products
     .map(
